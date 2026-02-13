@@ -331,7 +331,8 @@ const TRANSLATIONS = {
 
 // ─── i18n engine ────────────────────────────────────────
 const LANG_STORAGE_KEY = 'dive_lang';
-let currentLang = localStorage.getItem(LANG_STORAGE_KEY) || 'de';
+let currentLang = 'de';
+try { currentLang = localStorage.getItem(LANG_STORAGE_KEY) || 'de'; } catch (_) { /* storage blocked */ }
 
 /** Get translated string; supports {0}, {1} placeholders */
 function t(key, ...args) {
@@ -346,7 +347,7 @@ function t(key, ...args) {
 function setLanguage(lang) {
   if (!TRANSLATIONS[lang]) return;
   currentLang = lang;
-  localStorage.setItem(LANG_STORAGE_KEY, lang);
+  try { localStorage.setItem(LANG_STORAGE_KEY, lang); } catch (_) { /* storage blocked */ }
   document.documentElement.lang = lang;
   document.title = t('pageTitle');
   applyStaticTranslations();
