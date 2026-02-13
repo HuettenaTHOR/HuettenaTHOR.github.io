@@ -1,0 +1,228 @@
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #0b0f1a;
+  --surface:   #141b2d;
+  --surface2:  #1c2540;
+  --border:    #263354;
+  --text:      #e2e8f0;
+  --text-dim:  #94a3b8;
+  --accent:    #38bdf8;
+  --accent2:   #818cf8;
+  --hold:      #f472b6;
+  --rest:      #34d399;
+  --inhale:    #38bdf8;
+  --exhale:    #a78bfa;
+  --danger:    #f87171;
+  --radius:    14px;
+  --font:      'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+html { font-size: 16px; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+
+/* ===== SCREENS ===== */
+.screen {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100dvh;
+  padding: 2rem 1.25rem 3rem;
+  animation: fadeIn .3s ease;
+}
+.screen.active { display: flex; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ===== BACK BTN ===== */
+.back-btn {
+  align-self: flex-start;
+  background: none; border: none; color: var(--accent);
+  font-size: 1rem; cursor: pointer; margin-bottom: 1rem;
+  transition: color .2s;
+}
+.back-btn:hover { color: var(--text); }
+
+/* ===== HOME ===== */
+.home-content { max-width: 600px; width: 100%; text-align: center; margin-top: 8vh; }
+
+.logo {
+  font-size: 3.5rem; font-weight: 800; letter-spacing: .25em;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.tagline { color: var(--text-dim); margin-top: .25rem; font-size: 1.05rem; margin-bottom: 3rem; }
+
+.exercise-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+}
+@media (max-width: 500px) { .exercise-grid { grid-template-columns: 1fr; } }
+
+.exercise-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.5rem 1rem;
+  display: flex; flex-direction: column; align-items: center; gap: .5rem;
+  cursor: pointer; transition: transform .15s, border-color .2s, background .2s;
+  color: var(--text); text-align: center;
+}
+.exercise-card:hover { transform: translateY(-3px); border-color: var(--accent); background: var(--surface2); }
+.card-icon { font-size: 2rem; }
+.card-title { font-weight: 700; font-size: 1.05rem; }
+.card-desc { font-size: .82rem; color: var(--text-dim); line-height: 1.35; }
+
+/* ===== SETTINGS ===== */
+.settings-content {
+  max-width: 520px; width: 100%;
+}
+.settings-content h2 {
+  font-size: 1.5rem; margin-bottom: .25rem;
+}
+.settings-content .settings-desc {
+  color: var(--text-dim); font-size: .9rem; margin-bottom: 1.5rem; line-height: 1.45;
+}
+
+/* form pieces */
+.field { margin-bottom: 1.15rem; }
+.field label { display: block; font-size: .85rem; color: var(--text-dim); margin-bottom: .3rem; }
+.field input[type="number"],
+.field select {
+  width: 100%; padding: .6rem .75rem; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--surface2); color: var(--text);
+  font-size: 1rem; outline: none; transition: border-color .2s;
+}
+.field input:focus, .field select:focus { border-color: var(--accent); }
+
+/* intervals list */
+.interval-list { list-style: none; display: flex; flex-direction: column; gap: .5rem; margin-bottom: 1rem; }
+.interval-list li {
+  display: flex; align-items: center; gap: .5rem;
+  background: var(--surface2); padding: .5rem .75rem; border-radius: 8px;
+}
+.interval-list li span { flex: 1; font-size: .92rem; }
+.interval-list li input {
+  width: 70px; padding: .35rem .5rem; border-radius: 6px;
+  border: 1px solid var(--border); background: var(--surface); color: var(--text);
+  font-size: .92rem; text-align: center;
+}
+.interval-list li .remove-interval {
+  background: none; border: none; color: var(--danger); font-size: 1.1rem; cursor: pointer;
+  padding: 0 .25rem;
+}
+
+.add-interval-btn {
+  background: var(--surface2); border: 1px dashed var(--border); color: var(--accent);
+  padding: .5rem 1rem; border-radius: 8px; cursor: pointer; font-size: .9rem;
+  transition: border-color .2s; margin-bottom: 1.25rem; width: 100%;
+}
+.add-interval-btn:hover { border-color: var(--accent); }
+
+/* checkbox toggle */
+.toggle-field {
+  display: flex; align-items: center; gap: .75rem; margin-bottom: 1.25rem;
+}
+.toggle-field label { margin: 0; font-size: .95rem; color: var(--text); cursor: pointer; }
+
+.toggle {
+  position: relative; width: 44px; height: 24px; flex-shrink: 0;
+}
+.toggle input { opacity: 0; width: 0; height: 0; }
+.toggle .slider {
+  position: absolute; inset: 0; background: var(--surface2); border-radius: 999px;
+  border: 1px solid var(--border); transition: background .2s;
+  cursor: pointer;
+}
+.toggle .slider::before {
+  content: ''; position: absolute; left: 3px; top: 3px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--text-dim); transition: transform .2s, background .2s;
+}
+.toggle input:checked + .slider { background: var(--accent); border-color: var(--accent); }
+.toggle input:checked + .slider::before { transform: translateX(20px); background: #fff; }
+
+.start-btn {
+  width: 100%; padding: .85rem; border: none; border-radius: var(--radius);
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff; font-size: 1.1rem; font-weight: 700; cursor: pointer;
+  transition: opacity .2s;
+}
+.start-btn:hover { opacity: .9; }
+
+/* ===== EXERCISE SCREEN ===== */
+.exercise-display {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  flex: 1; width: 100%; max-width: 420px; gap: .5rem;
+}
+
+.phase-label {
+  font-size: 1.35rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  transition: color .3s;
+}
+.phase-label.hold   { color: var(--hold); }
+.phase-label.rest   { color: var(--rest); }
+.phase-label.inhale { color: var(--inhale); }
+.phase-label.exhale { color: var(--exhale); }
+.phase-label.retain { color: var(--accent2); }
+
+.timer-ring-wrap {
+  position: relative; width: 240px; height: 240px; margin: 1rem 0;
+}
+@media (min-width: 500px) { .timer-ring-wrap { width: 280px; height: 280px; } }
+
+.timer-ring { width: 100%; height: 100%; transform: rotate(-90deg); }
+.ring-bg { fill: none; stroke: var(--surface2); stroke-width: 8; }
+.ring-fg {
+  fill: none; stroke: var(--accent); stroke-width: 8;
+  stroke-linecap: round;
+  stroke-dasharray: 565.48;   /* 2 * π * 90 */
+  stroke-dashoffset: 0;
+  transition: stroke .4s;
+}
+
+.timer-center {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+}
+.timer-text {
+  font-size: 2.8rem; font-weight: 700; font-variant-numeric: tabular-nums;
+  letter-spacing: .04em;
+  transition: opacity .3s;
+}
+.timer-text.hidden { opacity: 0; }
+
+.timer-ring-wrap.timer-hidden .timer-ring { opacity: 0; }
+.timer-ring-wrap.timer-hidden .timer-text { opacity: 0; }
+.timer-ring-wrap .timer-ring { transition: opacity .3s; }
+
+.round-label { font-size: .95rem; color: var(--text-dim); }
+.instruction-text { font-size: .9rem; color: var(--text-dim); text-align: center; min-height: 1.4em; }
+
+.exercise-controls { display: flex; gap: .75rem; margin-top: 1.5rem; }
+.ctrl-btn {
+  width: 54px; height: 54px; border-radius: 50%; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text); font-size: 1.25rem;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: background .2s, border-color .2s;
+}
+.ctrl-btn:hover { background: var(--surface2); border-color: var(--accent); }
+.ctrl-btn.primary {
+  width: auto; padding: 0 2rem; border-radius: var(--radius);
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border: none; color: #fff; font-weight: 700; font-size: 1.05rem;
+}
+.ctrl-btn.primary:hover { opacity: .9; }
+
+/* ===== ANIMATION HELPER – pulsing ring ===== */
+@keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.04); } }
+.timer-ring-wrap.breathing { animation: pulse 2s ease-in-out infinite; }
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }

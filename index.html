@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DIVE — Breathing &amp; Breath-Hold Trainer</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🫁</text></svg>">
+</head>
+<body>
+  <!-- ============ LANDING / HOME ============ -->
+  <section id="home" class="screen active">
+    <div class="home-content">
+      <h1 class="logo">DIVE</h1>
+      <p class="tagline">Breathing &amp; Breath-Hold Trainer</p>
+
+      <div class="exercise-grid">
+        <!-- Interval Breath-Hold -->
+        <button class="exercise-card" data-exercise="interval">
+          <span class="card-icon">⏱️</span>
+          <span class="card-title">Interval Breath-Hold</span>
+          <span class="card-desc">Hold your breath with decreasing rest periods</span>
+        </button>
+
+        <!-- Wim Hof Method -->
+        <button class="exercise-card" data-exercise="wimhof">
+          <span class="card-icon">❄️</span>
+          <span class="card-title">Wim Hof Method</span>
+          <span class="card-desc">30 power breaths, retention &amp; recovery — 3 rounds</span>
+        </button>
+
+        <!-- Box Breathing -->
+        <button class="exercise-card" data-exercise="box">
+          <span class="card-icon">⬜</span>
+          <span class="card-title">Box Breathing</span>
+          <span class="card-desc">Inhale · Hold · Exhale · Hold — equal counts</span>
+        </button>
+
+        <!-- 4-7-8 Breathing -->
+        <button class="exercise-card" data-exercise="478">
+          <span class="card-icon">🌙</span>
+          <span class="card-title">4-7-8 Breathing</span>
+          <span class="card-desc">Calm your nervous system &amp; fall asleep faster</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SETTINGS SCREEN (per exercise) ============ -->
+  <section id="settings" class="screen">
+    <button class="back-btn" id="backToHome">← Back</button>
+    <div class="settings-content" id="settingsContent">
+      <!-- dynamically filled -->
+    </div>
+  </section>
+
+  <!-- ============ ACTIVE EXERCISE SCREEN ============ -->
+  <section id="exercise" class="screen">
+    <button class="back-btn" id="backToSettings">← Back</button>
+
+    <div class="exercise-display">
+      <p class="phase-label" id="phaseLabel">GET READY</p>
+
+      <!-- circular progress ring -->
+      <div class="timer-ring-wrap">
+        <svg class="timer-ring" viewBox="0 0 200 200">
+          <circle class="ring-bg" cx="100" cy="100" r="90"/>
+          <circle class="ring-fg" cx="100" cy="100" r="90" id="ringFg"/>
+        </svg>
+        <div class="timer-center">
+          <span class="timer-text" id="timerText">00:00</span>
+        </div>
+      </div>
+
+      <p class="round-label" id="roundLabel"></p>
+      <p class="instruction-text" id="instructionText"></p>
+
+      <div class="exercise-controls">
+        <button class="ctrl-btn" id="toggleTimerBtn" title="Show / Hide timer">
+          <span id="eyeIcon">👁️</span>
+        </button>
+        <button class="ctrl-btn primary" id="startPauseBtn">Start</button>
+        <button class="ctrl-btn" id="stopBtn" title="Stop">⏹</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- audio cues (generated in JS) -->
+  <script src="app.js"></script>
+</body>
+</html>
