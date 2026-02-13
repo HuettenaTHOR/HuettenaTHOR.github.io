@@ -90,6 +90,39 @@ document.querySelectorAll('.exercise-card').forEach(card => {
   });
 });
 
+// ─── Language switcher ─────────────────────────────────
+const $langToggle   = document.getElementById('langToggle');
+const $langDropdown = document.getElementById('langDropdown');
+
+$langToggle.addEventListener('click', (e) => {
+  e.stopPropagation();
+  $langDropdown.classList.toggle('open');
+});
+document.addEventListener('click', () => $langDropdown.classList.remove('open'));
+$langDropdown.addEventListener('click', (e) => e.stopPropagation());
+
+document.querySelectorAll('.lang-option').forEach(btn => {
+  btn.addEventListener('click', () => {
+    setLanguage(btn.dataset.lang);
+    updateLangActiveStates();
+    $langDropdown.classList.remove('open');
+    // Re-render settings if currently on that screen
+    if ($settings.classList.contains('active') && currentExercise) {
+      renderSettings(currentExercise);
+    }
+  });
+});
+
+function updateLangActiveStates() {
+  document.querySelectorAll('.lang-option').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === getLang());
+  });
+}
+
+// Apply language on load
+setLanguage(getLang());
+updateLangActiveStates();
+
 // ─── Settings renderers ─────────────────────────────────
 function renderSettings(type) {
   const builders = { interval: settingsInterval, wimhof: settingsWimHof, box: settingsBox, '478': settings478 };
@@ -107,29 +140,26 @@ function settingsInterval() {
   let rests = [...saved.rests];
 
   const html = `
-    <h2>⏱️ Interval Breath-Hold</h2>
-    <p class="settings-desc">
-      Hold your breath for a fixed time, resting between holds with decreasing rest durations.
-      Adjust the hold time and each rest period below.
-    </p>
+    <h2>${t('intervalSettingsTitle')}</h2>
+    <p class="settings-desc">${t('intervalSettingsDesc')}</p>
     <div class="field">
-      <label>Hold time (seconds)</label>
+      <label>${t('holdTimeLabel')}</label>
       <input type="number" id="intervalHold" min="5" max="600" value="${saved.holdTime}">
     </div>
     <label style="font-size:.85rem;color:var(--text-dim);margin-bottom:.4rem;display:block;">
-      Rest periods (seconds) — from longest to shortest
+      ${t('restPeriodsLabel')}
     </label>
     <ul class="interval-list" id="intervalList"></ul>
-    <button class="add-interval-btn" id="addRestBtn">+ Add rest period</button>
+    <button class="add-interval-btn" id="addRestBtn">${t('addRest')}</button>
 
     <div class="toggle-field">
       <label class="toggle">
         <input type="checkbox" id="intervalShowTimer" ${saved.showTimer ? 'checked' : ''}>
         <span class="slider"></span>
       </label>
-      <label for="intervalShowTimer">Show remaining time during hold</label>
+      <label for="intervalShowTimer">${t('showTimerDuringHold')}</label>
     </div>
-    <button class="start-btn" id="goBtn">Start Exercise</button>
+    <button class="start-btn" id="goBtn">${t('startExercise')}</button>
   `;
   $settingsBody.innerHTML = html;
 
@@ -137,7 +167,7 @@ function settingsInterval() {
     const ul = document.getElementById('intervalList');
     ul.innerHTML = rests.map((r, i) => `
       <li>
-        <span>Rest #${i + 1}</span>
+        <span>${t('restPrefix')} #${i + 1}</span>
         <input type="number" min="0" max="600" value="${r}" data-idx="${i}" class="rest-input">
         <button class="remove-interval" data-idx="${i}" title="Remove">&times;</button>
       </li>
@@ -180,21 +210,18 @@ function settingsWimHof() {
   });
 
   $settingsBody.innerHTML = `
-    <h2>❄️ Wim Hof Method</h2>
-    <p class="settings-desc">
-      Take deep, rhythmic breaths, then exhale and hold as long as you can.
-      Finish each round with a recovery breath held for 15 s. Repeat for multiple rounds.
-    </p>
+    <h2>${t('wimhofSettingsTitle')}</h2>
+    <p class="settings-desc">${t('wimhofSettingsDesc')}</p>
     <div class="field">
-      <label>Breaths per round</label>
+      <label>${t('breathsPerRound')}</label>
       <input type="number" id="whBreaths" min="10" max="60" value="${saved.breathCount}">
     </div>
     <div class="field">
-      <label>Rounds</label>
+      <label>${t('rounds')}</label>
       <input type="number" id="whRounds" min="1" max="10" value="${saved.rounds}">
     </div>
     <div class="field">
-      <label>Recovery hold (seconds)</label>
+      <label>${t('recoveryHold')}</label>
       <input type="number" id="whRecovery" min="5" max="60" value="${saved.recoveryHold}">
     </div>
     <div class="toggle-field">
@@ -202,9 +229,9 @@ function settingsWimHof() {
         <input type="checkbox" id="whShowTimer" ${saved.showTimer ? 'checked' : ''}>
         <span class="slider"></span>
       </label>
-      <label for="whShowTimer">Show timer during retention</label>
+      <label for="whShowTimer">${t('showTimerDuringRetention')}</label>
     </div>
-    <button class="start-btn" id="goBtn">Start Exercise</button>
+    <button class="start-btn" id="goBtn">${t('startExercise')}</button>
   `;
 
   document.getElementById('goBtn').addEventListener('click', () => {
@@ -226,17 +253,14 @@ function settingsBox() {
   const saved = loadConfig('box', { count: 4, rounds: 4, showTimer: true });
 
   $settingsBody.innerHTML = `
-    <h2>⬜ Box Breathing</h2>
-    <p class="settings-desc">
-      Also called "square breathing" — used by Navy SEALs to stay calm under pressure.
-      Inhale, hold, exhale, hold — each for the same count.
-    </p>
+    <h2>${t('boxSettingsTitle')}</h2>
+    <p class="settings-desc">${t('boxSettingsDesc')}</p>
     <div class="field">
-      <label>Seconds per side</label>
+      <label>${t('secondsPerSide')}</label>
       <input type="number" id="boxCount" min="2" max="20" value="${saved.count}">
     </div>
     <div class="field">
-      <label>Rounds</label>
+      <label>${t('rounds')}</label>
       <input type="number" id="boxRounds" min="1" max="20" value="${saved.rounds}">
     </div>
     <div class="toggle-field">
@@ -244,9 +268,9 @@ function settingsBox() {
         <input type="checkbox" id="boxShowTimer" ${saved.showTimer ? 'checked' : ''}>
         <span class="slider"></span>
       </label>
-      <label for="boxShowTimer">Show timer</label>
+      <label for="boxShowTimer">${t('showTimer')}</label>
     </div>
-    <button class="start-btn" id="goBtn">Start Exercise</button>
+    <button class="start-btn" id="goBtn">${t('startExercise')}</button>
   `;
 
   document.getElementById('goBtn').addEventListener('click', () => {
@@ -267,13 +291,10 @@ function settings478() {
   const saved = loadConfig('478', { cycles: 4, showTimer: true });
 
   $settingsBody.innerHTML = `
-    <h2>🌙 4-7-8 Breathing</h2>
-    <p class="settings-desc">
-      Developed by Dr. Andrew Weil, based on pranayama yoga.<br>
-      Inhale through the nose for 4 s, hold for 7 s, exhale through the mouth for 8 s.
-    </p>
+    <h2>${t('478SettingsTitle')}</h2>
+    <p class="settings-desc">${t('478SettingsDesc')}</p>
     <div class="field">
-      <label>Cycles</label>
+      <label>${t('cycles')}</label>
       <input type="number" id="cycles478" min="1" max="12" value="${saved.cycles}">
     </div>
     <div class="toggle-field">
@@ -281,9 +302,9 @@ function settings478() {
         <input type="checkbox" id="show478" ${saved.showTimer ? 'checked' : ''}>
         <span class="slider"></span>
       </label>
-      <label for="show478">Show timer</label>
+      <label for="show478">${t('showTimer')}</label>
     </div>
-    <button class="start-btn" id="goBtn">Start Exercise</button>
+    <button class="start-btn" id="goBtn">${t('startExercise')}</button>
   `;
 
   document.getElementById('goBtn').addEventListener('click', () => {
@@ -367,7 +388,7 @@ function countdown(totalSecs, { onTick, onDone, color, isHoldPhase = false }) {
 $startPause.addEventListener('click', () => {
   if (!running) return;
   paused = !paused;
-  $startPause.textContent = paused ? 'Resume' : 'Pause';
+  $startPause.textContent = paused ? t('resume') : t('pause');
 });
 
 $stop.addEventListener('click', () => { stopExercise(); history.back(); });
@@ -381,14 +402,14 @@ function stopExercise() {
   $ringWrap.classList.remove('breathing');
   $ringWrap.classList.remove('timer-hidden');
   $timerText.classList.remove('hidden');
-  $startPause.textContent = 'Start';
+  $startPause.textContent = t('start');
   $phaseLabel.className = 'phase-label';
 }
 
 function initExerciseScreen() {
   running = true; paused = false;
-  $startPause.textContent = 'Pause';
-  $phaseLabel.textContent = 'GET READY';
+  $startPause.textContent = t('pause');
+  $phaseLabel.textContent = t('getReady');
   $phaseLabel.className = 'phase-label';
   $roundLabel.textContent = '';
   $instrText.textContent = '';
@@ -409,18 +430,18 @@ async function startInterval(cfg) {
   const holds = cfg.rests.length + 1;  // one more hold than rest periods
 
   // Initial 5-second get-ready
-  $phaseLabel.textContent = 'GET READY';
-  $instrText.textContent = 'Prepare yourself…';
+  $phaseLabel.textContent = t('getReady');
+  $instrText.textContent = t('prepareYourself');
   await countdown(5, { color: 'var(--text-dim)' });
 
   for (let i = 0; i < holds; i++) {
     if (!running) return;
 
     // HOLD
-    $phaseLabel.textContent = 'HOLD';
+    $phaseLabel.textContent = t('hold');
     $phaseLabel.className = 'phase-label hold';
-    $roundLabel.textContent = `Hold ${i + 1} of ${holds}`;
-    $instrText.textContent = 'Hold your breath';
+    $roundLabel.textContent = t('holdOf', i + 1, holds);
+    $instrText.textContent = t('holdBreath');
     beepHigh();
     await countdown(cfg.holdTime, { color: 'var(--hold)', isHoldPhase: true });
 
@@ -428,9 +449,9 @@ async function startInterval(cfg) {
 
     // REST (if not last hold)
     if (i < cfg.rests.length) {
-      $phaseLabel.textContent = 'REST';
+      $phaseLabel.textContent = t('rest');
       $phaseLabel.className = 'phase-label rest';
-      $instrText.textContent = 'Breathe freely';
+      $instrText.textContent = t('breatheFreely');
       beepLow();
       await countdown(cfg.rests[i], { color: 'var(--rest)', isHoldPhase: false });
     }
@@ -445,18 +466,18 @@ async function startWimHof(cfg) {
   initExerciseScreen();
 
   // Get ready
-  $phaseLabel.textContent = 'GET READY';
-  $instrText.textContent = 'Sit comfortably — breathe normally';
+  $phaseLabel.textContent = t('getReady');
+  $instrText.textContent = t('sitComfortably');
   await countdown(5, { color: 'var(--text-dim)' });
 
   for (let round = 1; round <= cfg.rounds; round++) {
     if (!running) return;
-    $roundLabel.textContent = `Round ${round} of ${cfg.rounds}`;
+    $roundLabel.textContent = t('roundOf', round, cfg.rounds);
 
     // ── Power breaths ──
-    $phaseLabel.textContent = 'BREATHE';
+    $phaseLabel.textContent = t('breathe');
     $phaseLabel.className = 'phase-label inhale';
-    $instrText.textContent = `${cfg.breathCount} deep breaths — in through nose, out through mouth`;
+    $instrText.textContent = t('deepBreaths', cfg.breathCount);
     $ringWrap.classList.add('breathing');
 
     // Animate breaths: ~1.5 s inhale, ~1 s exhale = 2.5 s / breath
@@ -467,13 +488,13 @@ async function startWimHof(cfg) {
       setRingProgress(1 - b / cfg.breathCount);
 
       // inhale phase label
-      $phaseLabel.textContent = 'INHALE';
+      $phaseLabel.textContent = t('inhale');
       $phaseLabel.className = 'phase-label inhale';
       setRingColor('var(--inhale)');
       await sleep(1500);
       if (!running) return;
       // exhale
-      $phaseLabel.textContent = 'EXHALE';
+      $phaseLabel.textContent = t('exhale');
       $phaseLabel.className = 'phase-label exhale';
       setRingColor('var(--exhale)');
       await sleep(1000);
@@ -486,9 +507,9 @@ async function startWimHof(cfg) {
     if (!running) return;
 
     // ── Retention (hold after exhale) ──
-    $phaseLabel.textContent = 'HOLD';
+    $phaseLabel.textContent = t('hold');
     $phaseLabel.className = 'phase-label hold';
-    $instrText.textContent = 'Exhale fully and hold — tap Pause when you need to breathe';
+    $instrText.textContent = t('exhaleAndHold');
     beepHigh();
     // Count UP — user decides when to stop
     await countUp('var(--hold)');
@@ -496,9 +517,9 @@ async function startWimHof(cfg) {
     if (!running) return;
 
     // ── Recovery breath ──
-    $phaseLabel.textContent = 'RECOVERY';
+    $phaseLabel.textContent = t('recovery');
     $phaseLabel.className = 'phase-label inhale';
-    $instrText.textContent = 'Take one deep breath and hold';
+    $instrText.textContent = t('takeDeepBreath');
     beepLow();
     await countdown(cfg.recoveryHold, { color: 'var(--inhale)' });
   }
@@ -516,14 +537,14 @@ function countUp(color) {
     applyTimerVisibility(true);  // this is a hold phase
     let elapsed = 0;
     paused = false;
-    $startPause.textContent = 'Stop hold';
+    $startPause.textContent = t('stopHold');
 
     const iv = setInterval(() => {
       if (!running) { clearInterval(iv); resolve(); return; }
       if (paused) {
         clearInterval(iv);
         paused = false;
-        $startPause.textContent = 'Pause';
+        $startPause.textContent = t('pause');
         beepDouble();
         resolve();
         return;
@@ -539,19 +560,19 @@ async function startBox(cfg) {
   initExerciseScreen();
   $ringWrap.classList.add('breathing');
 
-  $phaseLabel.textContent = 'GET READY';
-  $instrText.textContent = 'Sit upright, feet flat on the floor';
+  $phaseLabel.textContent = t('getReady');
+  $instrText.textContent = t('sitUpright');
   await countdown(5, { color: 'var(--text-dim)' });
 
   const phases = [
-    { label: 'INHALE', cls: 'inhale', color: 'var(--inhale)',  instr: 'Breathe in slowly through your nose',           isHold: false },
-    { label: 'HOLD',   cls: 'retain', color: 'var(--accent2)', instr: 'Hold your breath',                               isHold: true  },
-    { label: 'EXHALE', cls: 'exhale', color: 'var(--exhale)',  instr: 'Breathe out slowly through your mouth',           isHold: false },
-    { label: 'HOLD',   cls: 'retain', color: 'var(--accent2)', instr: 'Hold — lungs empty',                              isHold: true  },
+    { label: t('inhale'), cls: 'inhale', color: 'var(--inhale)',  instr: t('breatheInSlowly'),  isHold: false },
+    { label: t('hold'),   cls: 'retain', color: 'var(--accent2)', instr: t('holdYourBreath'),   isHold: true  },
+    { label: t('exhale'), cls: 'exhale', color: 'var(--exhale)',  instr: t('breatheOutSlowly'), isHold: false },
+    { label: t('hold'),   cls: 'retain', color: 'var(--accent2)', instr: t('holdLungsEmpty'),   isHold: true  },
   ];
 
   for (let r = 1; r <= cfg.rounds; r++) {
-    $roundLabel.textContent = `Round ${r} of ${cfg.rounds}`;
+    $roundLabel.textContent = t('roundOf', r, cfg.rounds);
     for (const p of phases) {
       if (!running) return;
       $phaseLabel.textContent = p.label;
@@ -572,36 +593,36 @@ async function start478(cfg) {
   initExerciseScreen();
   $ringWrap.classList.add('breathing');
 
-  $phaseLabel.textContent = 'GET READY';
-  $instrText.textContent = 'Place tongue behind upper front teeth';
+  $phaseLabel.textContent = t('getReady');
+  $instrText.textContent = t('placeTongue');
   await countdown(5, { color: 'var(--text-dim)' });
 
   for (let c = 1; c <= cfg.cycles; c++) {
     if (!running) return;
-    $roundLabel.textContent = `Cycle ${c} of ${cfg.cycles}`;
+    $roundLabel.textContent = t('cycleOf', c, cfg.cycles);
 
     // Inhale 4
-    $phaseLabel.textContent = 'INHALE';
+    $phaseLabel.textContent = t('inhale');
     $phaseLabel.className = 'phase-label inhale';
-    $instrText.textContent = 'Breathe in quietly through the nose';
+    $instrText.textContent = t('breatheInNose');
     beepLow();
     await countdown(4, { color: 'var(--inhale)', isHoldPhase: false });
 
     if (!running) return;
 
     // Hold 7
-    $phaseLabel.textContent = 'HOLD';
+    $phaseLabel.textContent = t('hold');
     $phaseLabel.className = 'phase-label retain';
-    $instrText.textContent = 'Hold your breath';
+    $instrText.textContent = t('holdYourBreath');
     beepHigh();
     await countdown(7, { color: 'var(--accent2)', isHoldPhase: true });
 
     if (!running) return;
 
     // Exhale 8
-    $phaseLabel.textContent = 'EXHALE';
+    $phaseLabel.textContent = t('exhale');
     $phaseLabel.className = 'phase-label exhale';
-    $instrText.textContent = 'Exhale forcefully through mouth — "whoosh"';
+    $instrText.textContent = t('exhaleWhoosh');
     beepLow();
     await countdown(8, { color: 'var(--exhale)', isHoldPhase: false });
   }
@@ -613,11 +634,11 @@ async function start478(cfg) {
 
 // ─── Finish ─────────────────────────────────────────────
 function finishExercise() {
-  $phaseLabel.textContent = '🎉 DONE';
+  $phaseLabel.textContent = t('done');
   $phaseLabel.className = 'phase-label';
-  $instrText.textContent = 'Great job! Exercise complete.';
+  $instrText.textContent = t('greatJob');
   $roundLabel.textContent = '';
-  $startPause.textContent = 'Start';
+  $startPause.textContent = t('start');
   setRingProgress(0);
   setRingColor('var(--accent)');
   applyTimerVisibility(false); // show ring on completion

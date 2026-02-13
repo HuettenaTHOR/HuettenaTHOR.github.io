@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DIVE — Breathing &amp; Breath-Hold Trainer</title>
+  <title>DIVE — Atem- &amp; Atemanhalte-Trainer</title>
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🫁</text></svg>">
 </head>
@@ -16,35 +16,48 @@
   <section id="home" class="screen active">
     <div class="home-content">
       <h1 class="logo">DIVE</h1>
-      <p class="tagline">Breathing &amp; Breath-Hold Trainer</p>
+      <p class="tagline" data-i18n="tagline">Atem- &amp; Atemanhalte-Trainer</p>
+
+      <!-- Language switcher -->
+      <div class="lang-switcher">
+        <button class="lang-toggle" id="langToggle">
+          🌐 <span id="langActiveLabel">DE</span>
+        </button>
+        <div class="lang-dropdown" id="langDropdown">
+          <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+          <button class="lang-option" data-lang="en">🇬🇧 English</button>
+          <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+          <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
+        </div>
+      </div>
 
       <div class="exercise-grid">
         <!-- Interval Breath-Hold -->
         <button class="exercise-card" data-exercise="interval">
           <span class="card-icon">⏱️</span>
-          <span class="card-title">Interval Breath-Hold</span>
-          <span class="card-desc">Hold your breath with decreasing rest periods</span>
+          <span class="card-title" data-i18n="intervalTitle">Intervall-Atemanhalten</span>
+          <span class="card-desc" data-i18n="intervalDesc">Halte die Luft an mit abnehmenden Ruhepausen</span>
         </button>
 
         <!-- Wim Hof Method -->
         <button class="exercise-card" data-exercise="wimhof">
           <span class="card-icon">❄️</span>
-          <span class="card-title">Wim Hof Method</span>
-          <span class="card-desc">30 power breaths, retention &amp; recovery — 3 rounds</span>
+          <span class="card-title" data-i18n="wimhofTitle">Wim-Hof-Methode</span>
+          <span class="card-desc" data-i18n="wimhofDesc">30 Power-Atemzüge, Anhalten &amp; Erholung — 3 Runden</span>
         </button>
 
         <!-- Box Breathing -->
         <button class="exercise-card" data-exercise="box">
           <span class="card-icon">⬜</span>
-          <span class="card-title">Box Breathing</span>
-          <span class="card-desc">Inhale · Hold · Exhale · Hold — equal counts</span>
+          <span class="card-title" data-i18n="boxTitle">Box-Atmung</span>
+          <span class="card-desc" data-i18n="boxDesc">Einatmen · Halten · Ausatmen · Halten — gleiche Zeiten</span>
         </button>
 
         <!-- 4-7-8 Breathing -->
         <button class="exercise-card" data-exercise="478">
           <span class="card-icon">🌙</span>
-          <span class="card-title">4-7-8 Breathing</span>
-          <span class="card-desc">Calm your nervous system &amp; fall asleep faster</span>
+          <span class="card-title" data-i18n="478Title">4-7-8 Atmung</span>
+          <span class="card-desc" data-i18n="478Desc">Beruhige dein Nervensystem &amp; schlafe schneller ein</span>
         </button>
       </div>
     </div>
@@ -52,7 +65,7 @@
 
   <!-- ============ SETTINGS SCREEN (per exercise) ============ -->
   <section id="settings" class="screen">
-    <button class="back-btn" id="backToHome">← Back</button>
+    <button class="back-btn" id="backToHome" data-i18n="back">← Zurück</button>
     <div class="settings-content" id="settingsContent">
       <!-- dynamically filled -->
     </div>
@@ -60,10 +73,10 @@
 
   <!-- ============ ACTIVE EXERCISE SCREEN ============ -->
   <section id="exercise" class="screen">
-    <button class="back-btn" id="backToSettings">← Back</button>
+    <button class="back-btn" id="backToSettings" data-i18n="back">← Zurück</button>
 
     <div class="exercise-display">
-      <p class="phase-label" id="phaseLabel">GET READY</p>
+      <p class="phase-label" id="phaseLabel">BEREIT MACHEN</p>
 
       <!-- circular progress ring -->
       <div class="timer-ring-wrap">
@@ -83,7 +96,7 @@
         <button class="ctrl-btn" id="toggleTimerBtn" title="Show / Hide timer">
           <span id="eyeIcon">👁️</span>
         </button>
-        <button class="ctrl-btn primary" id="startPauseBtn">Start</button>
+        <button class="ctrl-btn primary" id="startPauseBtn" data-i18n="start">Start</button>
         <button class="ctrl-btn" id="stopBtn" title="Stop">⏹</button>
       </div>
     </div>
@@ -91,6 +104,7 @@
 
   <!-- scripts -->
   <script src="ocean.js"></script>
+  <script src="i18n.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
