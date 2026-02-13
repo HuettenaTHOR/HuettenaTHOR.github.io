@@ -364,6 +364,85 @@ body {
 }
 .ctrl-btn.primary:hover { opacity: .9; }
 
+/* ===== STATS SUMMARY ===== */
+.stats-content {
+  max-width: 520px; width: 100%; padding-top: 2rem;
+}
+.stats-title {
+  font-size: 1.5rem; font-weight: 700; text-align: center;
+  margin-bottom: .35rem;
+}
+.stats-subtitle {
+  text-align: center; color: var(--text-dim); font-size: .9rem;
+  margin-bottom: 1.5rem;
+}
+.stats-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: .75rem;
+  margin-bottom: 1.25rem;
+}
+@media (max-width: 400px) { .stats-grid { grid-template-columns: 1fr; } }
+.stat-card {
+  background: rgba(6, 40, 61, .75); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1rem;
+  text-align: center;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+.stat-card.wide { grid-column: 1 / -1; }
+.stat-value {
+  font-size: 1.6rem; font-weight: 700; color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.stat-label {
+  font-size: .8rem; color: var(--text-dim); margin-top: .2rem;
+}
+.stats-holds-section {
+  margin-bottom: 1.25rem;
+}
+.stats-holds-title {
+  font-size: .95rem; font-weight: 600; color: var(--text-dim);
+  margin-bottom: .5rem;
+}
+.stats-hold-bars {
+  display: flex; flex-direction: column; gap: .4rem;
+}
+.stats-hold-bar {
+  display: flex; align-items: center; gap: .6rem;
+}
+.stats-hold-bar-num {
+  font-size: .8rem; color: var(--text-dim); min-width: 1.5rem; text-align: right;
+}
+.stats-hold-bar-track {
+  flex: 1; height: 26px; background: var(--surface2); border-radius: 6px;
+  overflow: hidden; position: relative;
+}
+.stats-hold-bar-fill {
+  height: 100%; border-radius: 6px;
+  background: linear-gradient(90deg, var(--hold), var(--accent2));
+  display: flex; align-items: center; justify-content: flex-end;
+  padding-right: .5rem; min-width: 2.5rem;
+  transition: width .6s ease;
+}
+.stats-hold-bar-label {
+  font-size: .75rem; font-weight: 600; color: #fff;
+  white-space: nowrap;
+}
+.stats-home-btn {
+  width: 100%; padding: .85rem; border: none; border-radius: var(--radius);
+  background: linear-gradient(135deg, #2dd4bf, #0891b2);
+  color: #fff; font-size: 1.1rem; font-weight: 700; cursor: pointer;
+  transition: opacity .2s; margin-top: .5rem;
+}
+.stats-home-btn:hover { opacity: .9; }
+
+/* Wim Hof hold result during recovery */
+.hold-result-badge {
+  font-size: 1.05rem; font-weight: 600; color: var(--accent);
+  background: rgba(6, 40, 61, .8); border: 1px solid var(--border);
+  border-radius: 999px; padding: .35rem 1rem;
+  margin-top: .25rem; display: inline-block;
+  animation: fadeIn .3s ease;
+}
+
 /* ===== ANIMATION HELPER – pulsing ring ===== */
 @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.04); } }
 .timer-ring-wrap.breathing { animation: pulse 2s ease-in-out infinite; }

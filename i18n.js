@@ -96,6 +96,24 @@ const TRANSLATIONS = {
 
     // ── Language menu ──
     language: 'Sprache',
+
+    // ── Stats summary ──
+    statsTitle: '📊 Zusammenfassung',
+    statsTotalDuration: 'Gesamtdauer',
+    statsTotalHoldTime: 'Gesamte Anhaltezeit',
+    statsLongestHold: 'Längster Atemstopp',
+    statsShortestHold: 'Kürzester Atemstopp',
+    statsAvgHold: 'Durchschnittliche Anhaltezeit',
+    statsHoldsCompleted: 'Atemstopps absolviert',
+    statsRoundsCompleted: 'Runden absolviert',
+    statsCyclesCompleted: 'Zyklen absolviert',
+    statsTotalBreaths: 'Atemzüge gesamt',
+    statsTotalRestTime: 'Gesamte Ruhezeit',
+    statsHoldTimes: 'Einzelne Atemstopps',
+    statsBackHome: 'Zurück zum Start',
+    statsHeldFor: 'Angehalten: {0}',
+    statsMin: 'min',
+    statsSec: 's',
   },
 
   en: {
@@ -177,6 +195,24 @@ const TRANSLATIONS = {
     closeInfo: 'Close',
 
     language: 'Language',
+
+    // ── Stats summary ──
+    statsTitle: '📊 Summary',
+    statsTotalDuration: 'Total duration',
+    statsTotalHoldTime: 'Total breath-hold time',
+    statsLongestHold: 'Longest hold',
+    statsShortestHold: 'Shortest hold',
+    statsAvgHold: 'Average hold time',
+    statsHoldsCompleted: 'Holds completed',
+    statsRoundsCompleted: 'Rounds completed',
+    statsCyclesCompleted: 'Cycles completed',
+    statsTotalBreaths: 'Total breaths',
+    statsTotalRestTime: 'Total rest time',
+    statsHoldTimes: 'Individual holds',
+    statsBackHome: 'Back to home',
+    statsHeldFor: 'Held for: {0}',
+    statsMin: 'min',
+    statsSec: 's',
   },
 
   es: {
@@ -258,6 +294,24 @@ const TRANSLATIONS = {
     closeInfo: 'Cerrar',
 
     language: 'Idioma',
+
+    // ── Stats summary ──
+    statsTitle: '📊 Resumen',
+    statsTotalDuration: 'Duración total',
+    statsTotalHoldTime: 'Tiempo total de retención',
+    statsLongestHold: 'Retención más larga',
+    statsShortestHold: 'Retención más corta',
+    statsAvgHold: 'Tiempo promedio de retención',
+    statsHoldsCompleted: 'Retenciones completadas',
+    statsRoundsCompleted: 'Rondas completadas',
+    statsCyclesCompleted: 'Ciclos completados',
+    statsTotalBreaths: 'Respiraciones totales',
+    statsTotalRestTime: 'Tiempo total de descanso',
+    statsHoldTimes: 'Retenciones individuales',
+    statsBackHome: 'Volver al inicio',
+    statsHeldFor: 'Retenido: {0}',
+    statsMin: 'min',
+    statsSec: 's',
   },
 
   fr: {
@@ -339,6 +393,24 @@ const TRANSLATIONS = {
     closeInfo: 'Fermer',
 
     language: 'Langue',
+
+    // ── Stats summary ──
+    statsTitle: '📊 Résumé',
+    statsTotalDuration: 'Durée totale',
+    statsTotalHoldTime: 'Temps total de rétention',
+    statsLongestHold: 'Plus longue rétention',
+    statsShortestHold: 'Plus courte rétention',
+    statsAvgHold: 'Temps moyen de rétention',
+    statsHoldsCompleted: 'Rétentions effectuées',
+    statsRoundsCompleted: 'Tours effectués',
+    statsCyclesCompleted: 'Cycles effectués',
+    statsTotalBreaths: 'Respirations totales',
+    statsTotalRestTime: 'Temps total de repos',
+    statsHoldTimes: 'Rétentions individuelles',
+    statsBackHome: 'Retour à l\'accueil',
+    statsHeldFor: 'Retenu : {0}',
+    statsMin: 'min',
+    statsSec: 's',
   },
 };
 

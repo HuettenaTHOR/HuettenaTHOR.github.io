@@ -7,6 +7,8 @@
 const $home         = document.getElementById('home');
 const $settings     = document.getElementById('settings');
 const $exercise     = document.getElementById('exercise');
+const $stats        = document.getElementById('stats');
+const $statsContent = document.getElementById('statsContent');
 const $settingsBody = document.getElementById('settingsContent');
 const $phaseLabel   = document.getElementById('phaseLabel');
 const $timerText    = document.getElementById('timerText');
@@ -57,10 +59,10 @@ function beepDouble() { beep(660, 100); setTimeout(() => beep(880, 100), 150); }
 function beepCountdown() { beep(550, 80, 0.15); }
 
 // ─── Navigation (History API) ────────────────────────────
-const SCREENS = { home: $home, settings: $settings, exercise: $exercise };
+const SCREENS = { home: $home, settings: $settings, exercise: $exercise, stats: $stats };
 
 function showScreen(screen) {
-  [$home, $settings, $exercise].forEach(s => s.classList.remove('active'));
+  [$home, $settings, $exercise, $stats].forEach(s => s.classList.remove('active'));
   screen.classList.add('active');
 }
 
@@ -69,6 +71,22 @@ function navigateTo(screenName, push = true) {
   if (screenName === 'settings' && !currentExercise) { screenName = 'home'; }
   showScreen(SCREENS[screenName]);
   if (push) history.pushState({ screen: screenName }, '', '');
+}
+
+// ─── Session tracking ───────────────────────────────────
+let sessionData = null;
+
+function initSessionData() {
+  sessionData = {
+    exerciseType: currentExercise,
+    startTime: Date.now(),
+    endTime: null,
+    holdTimes: [],       // each hold duration in seconds
+    restTimes: [],       // each rest duration in seconds
+    totalBreaths: 0,     // for Wim Hof / breathing exercises
+    rounds: 0,           // completed rounds/cycles
+    totalRounds: 0,      // configured rounds/cycles
+  };
 }
 
 // Handle browser / mobile back button
@@ -474,6 +492,7 @@ function initExerciseScreen() {
   setTimerDisplay(0);
   setRingProgress(0);
   applyTimerVisibility(false); // start visible
+  initSessionData();
   navigateTo('exercise');
 }
 
@@ -486,6 +505,7 @@ async function startInterval(cfg) {
   initExerciseScreen();
 
   const holds = cfg.rests.length + 1;  // one more hold than rest periods
+  sessionData.totalRounds = holds;
 
   // Initial 5-second get-ready
   $phaseLabel.textContent = t('getReady');
@@ -502,6 +522,8 @@ async function startInterval(cfg) {
     $instrText.textContent = t('holdBreath');
     beepHigh();
     await countdown(cfg.holdTime, { color: 'var(--hold)', isHoldPhase: true });
+    sessionData.holdTimes.push(cfg.holdTime);
+    sessionData.rounds = i + 1;
 
     if (!running) return;
 
@@ -512,6 +534,7 @@ async function startInterval(cfg) {
       $instrText.textContent = t('breatheFreely');
       beepLow();
       await countdown(cfg.rests[i], { color: 'var(--rest)', isHoldPhase: false });
+      sessionData.restTimes.push(cfg.rests[i]);
     }
   }
 
@@ -522,6 +545,7 @@ async function startInterval(cfg) {
 /* ─── WIM HOF METHOD ────────────────────────────────────── */
 async function startWimHof(cfg) {
   initExerciseScreen();
+  sessionData.totalRounds = cfg.rounds;
 
   // Get ready
   $phaseLabel.textContent = t('getReady');
@@ -561,6 +585,7 @@ async function startWimHof(cfg) {
       while (paused && running) await sleep(200);
     }
     $ringWrap.classList.remove('breathing');
+    sessionData.totalBreaths += cfg.breathCount;
 
     if (!running) return;
 
@@ -570,23 +595,28 @@ async function startWimHof(cfg) {
     $instrText.textContent = t('exhaleAndHold');
     beepHigh();
     // Count UP — user decides when to stop
-    await countUp('var(--hold)');
+    const holdSecs = await countUp('var(--hold)');
+    sessionData.holdTimes.push(holdSecs);
+    sessionData.rounds = round;
 
     if (!running) return;
 
-    // ── Recovery breath ──
+    // ── Recovery breath — show how long they held ──
     $phaseLabel.textContent = t('recovery');
     $phaseLabel.className = 'phase-label inhale';
     $instrText.textContent = t('takeDeepBreath');
+    $roundLabel.innerHTML = t('roundOf', round, cfg.rounds)
+      + `<br><span class="hold-result-badge">${t('statsHeldFor', formatDuration(holdSecs))}</span>`;
     beepLow();
     await countdown(cfg.recoveryHold, { color: 'var(--inhale)' });
+    sessionData.restTimes.push(cfg.recoveryHold);
   }
 
   if (!running) return;
   finishExercise();
 }
 
-/** Count-up timer for open-ended retention (Wim Hof). Resolves when user un-pauses after pausing. */
+/** Count-up timer for open-ended retention (Wim Hof). Resolves with elapsed seconds. */
 function countUp(color) {
   return new Promise(resolve => {
     setRingColor(color);
@@ -598,13 +628,13 @@ function countUp(color) {
     $startPause.textContent = t('stopHold');
 
     const iv = setInterval(() => {
-      if (!running) { clearInterval(iv); resolve(); return; }
+      if (!running) { clearInterval(iv); resolve(elapsed); return; }
       if (paused) {
         clearInterval(iv);
         paused = false;
         $startPause.textContent = t('pause');
         beepDouble();
-        resolve();
+        resolve(elapsed);
         return;
       }
       elapsed++;
@@ -617,16 +647,17 @@ function countUp(color) {
 async function startBox(cfg) {
   initExerciseScreen();
   $ringWrap.classList.add('breathing');
+  sessionData.totalRounds = cfg.rounds;
 
   $phaseLabel.textContent = t('getReady');
   $instrText.textContent = t('sitUpright');
   await countdown(5, { color: 'var(--text-dim)' });
 
   const phases = [
-    { label: t('inhale'), cls: 'inhale', color: 'var(--inhale)',  instr: t('breatheInSlowly'),  isHold: false },
-    { label: t('hold'),   cls: 'retain', color: 'var(--accent2)', instr: t('holdYourBreath'),   isHold: true  },
-    { label: t('exhale'), cls: 'exhale', color: 'var(--exhale)',  instr: t('breatheOutSlowly'), isHold: false },
-    { label: t('hold'),   cls: 'retain', color: 'var(--accent2)', instr: t('holdLungsEmpty'),   isHold: true  },
+    { label: t('inhale'), cls: 'inhale', color: 'var(--inhale)',  instr: t('breatheInSlowly'),  isHold: false, track: 'breath' },
+    { label: t('hold'),   cls: 'retain', color: 'var(--accent2)', instr: t('holdYourBreath'),   isHold: true,  track: 'hold'   },
+    { label: t('exhale'), cls: 'exhale', color: 'var(--exhale)',  instr: t('breatheOutSlowly'), isHold: false, track: 'breath' },
+    { label: t('hold'),   cls: 'retain', color: 'var(--accent2)', instr: t('holdLungsEmpty'),   isHold: true,  track: 'hold'   },
   ];
 
   for (let r = 1; r <= cfg.rounds; r++) {
@@ -638,7 +669,10 @@ async function startBox(cfg) {
       $instrText.textContent = p.instr;
       beepLow();
       await countdown(cfg.count, { color: p.color, isHoldPhase: p.isHold });
+      if (p.track === 'hold') sessionData.holdTimes.push(cfg.count);
     }
+    sessionData.rounds = r;
+    sessionData.totalBreaths += 2; // inhale + exhale per round
   }
 
   $ringWrap.classList.remove('breathing');
@@ -650,6 +684,7 @@ async function startBox(cfg) {
 async function start478(cfg) {
   initExerciseScreen();
   $ringWrap.classList.add('breathing');
+  sessionData.totalRounds = cfg.cycles;
 
   $phaseLabel.textContent = t('getReady');
   $instrText.textContent = t('placeTongue');
@@ -674,6 +709,7 @@ async function start478(cfg) {
     $instrText.textContent = t('holdYourBreath');
     beepHigh();
     await countdown(7, { color: 'var(--accent2)', isHoldPhase: true });
+    sessionData.holdTimes.push(7);
 
     if (!running) return;
 
@@ -683,6 +719,9 @@ async function start478(cfg) {
     $instrText.textContent = t('exhaleWhoosh');
     beepLow();
     await countdown(8, { color: 'var(--exhale)', isHoldPhase: false });
+
+    sessionData.rounds = c;
+    sessionData.totalBreaths += 1; // one full breath cycle per cycle
   }
 
   $ringWrap.classList.remove('breathing');
@@ -692,16 +731,122 @@ async function start478(cfg) {
 
 // ─── Finish ─────────────────────────────────────────────
 function finishExercise() {
-  $phaseLabel.textContent = t('done');
-  $phaseLabel.className = 'phase-label';
-  $instrText.textContent = t('greatJob');
-  $roundLabel.textContent = '';
-  $startPause.textContent = t('start');
-  setRingProgress(0);
-  setRingColor('var(--accent)');
-  applyTimerVisibility(false); // show ring on completion
   running = false;
+  if (sessionData) sessionData.endTime = Date.now();
   beep(523, 200); setTimeout(() => beep(659, 200), 220); setTimeout(() => beep(784, 300), 440);
+  showStatsScreen();
+}
+
+// ─── Duration formatting helper ───────────────────────────────
+function formatDuration(totalSecs) {
+  const m = Math.floor(totalSecs / 60);
+  const s = Math.floor(totalSecs % 60);
+  if (m > 0) return `${m}:${String(s).padStart(2, '0')} ${t('statsMin')}`;
+  return `${s} ${t('statsSec')}`;
+}
+
+// ─── Stats screen ───────────────────────────────────────────
+function showStatsScreen() {
+  const d = sessionData;
+  if (!d) return;
+
+  const totalDuration = Math.round((d.endTime - d.startTime) / 1000);
+  const totalHold = d.holdTimes.reduce((a, b) => a + b, 0);
+  const totalRest = d.restTimes.reduce((a, b) => a + b, 0);
+  const longest = d.holdTimes.length ? Math.max(...d.holdTimes) : 0;
+  const shortest = d.holdTimes.length ? Math.min(...d.holdTimes) : 0;
+  const avg = d.holdTimes.length ? Math.round(totalHold / d.holdTimes.length) : 0;
+
+  const exerciseNames = {
+    interval: t('intervalTitle'),
+    wimhof: t('wimhofTitle'),
+    box: t('boxTitle'),
+    '478': t('478Title'),
+  };
+
+  // Build metric cards
+  let cardsHTML = '';
+
+  // Total duration — always show
+  cardsHTML += statCard(formatDuration(totalDuration), t('statsTotalDuration'));
+
+  // Holds completed (interval/wimhof)
+  if (d.holdTimes.length > 0) {
+    cardsHTML += statCard(formatDuration(totalHold), t('statsTotalHoldTime'));
+  }
+
+  // Rounds / cycles
+  if (d.exerciseType === '478') {
+    cardsHTML += statCard(d.rounds, t('statsCyclesCompleted'));
+  } else if (d.exerciseType === 'box') {
+    cardsHTML += statCard(d.rounds, t('statsRoundsCompleted'));
+  } else if (d.exerciseType === 'interval') {
+    cardsHTML += statCard(d.holdTimes.length, t('statsHoldsCompleted'));
+  } else if (d.exerciseType === 'wimhof') {
+    cardsHTML += statCard(d.rounds, t('statsRoundsCompleted'));
+  }
+
+  // Longest / shortest / avg hold (if multiple holds)
+  if (d.holdTimes.length >= 2) {
+    cardsHTML += statCard(formatDuration(longest), t('statsLongestHold'));
+    cardsHTML += statCard(formatDuration(shortest), t('statsShortestHold'));
+    cardsHTML += statCard(formatDuration(avg), t('statsAvgHold'));
+  } else if (d.holdTimes.length === 1) {
+    cardsHTML += statCard(formatDuration(d.holdTimes[0]), t('statsLongestHold'));
+  }
+
+  // Total breaths (Wim Hof)
+  if (d.totalBreaths > 0 && d.exerciseType === 'wimhof') {
+    cardsHTML += statCard(d.totalBreaths, t('statsTotalBreaths'));
+  }
+
+  // Total rest time
+  if (totalRest > 0) {
+    cardsHTML += statCard(formatDuration(totalRest), t('statsTotalRestTime'));
+  }
+
+  // Build hold bars (visual bar chart for individual holds)
+  let barsHTML = '';
+  if (d.holdTimes.length >= 2) {
+    const maxH = Math.max(...d.holdTimes, 1);
+    barsHTML = `<div class="stats-holds-section">
+      <div class="stats-holds-title">${t('statsHoldTimes')}</div>
+      <div class="stats-hold-bars">
+        ${d.holdTimes.map((h, i) => {
+          const pct = Math.max(10, (h / maxH) * 100);
+          return `<div class="stats-hold-bar">
+            <span class="stats-hold-bar-num">${i + 1}</span>
+            <div class="stats-hold-bar-track">
+              <div class="stats-hold-bar-fill" style="width:${pct}%">
+                <span class="stats-hold-bar-label">${formatDuration(h)}</span>
+              </div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }
+
+  $statsContent.innerHTML = `
+    <h2 class="stats-title">${t('statsTitle')}</h2>
+    <p class="stats-subtitle">${exerciseNames[d.exerciseType] || ''} — ${t('greatJob')}</p>
+    <div class="stats-grid">${cardsHTML}</div>
+    ${barsHTML}
+    <button class="stats-home-btn" id="statsHomeBtn">${t('statsBackHome')}</button>
+  `;
+
+  navigateTo('stats');
+
+  document.getElementById('statsHomeBtn').addEventListener('click', () => {
+    navigateTo('home');
+  });
+}
+
+function statCard(value, label) {
+  return `<div class="stat-card">
+    <div class="stat-value">${value}</div>
+    <div class="stat-label">${label}</div>
+  </div>`;
 }
 
 // ─── Utility ────────────────────────────────────────────
