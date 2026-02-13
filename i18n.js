@@ -90,6 +90,10 @@ const TRANSLATIONS = {
     resume: 'Fortsetzen',
     stopHold: 'Anhalten beenden',
 
+    // ── Info / Research ──
+    infoButton: 'ℹ️ Hintergrund & Forschung',
+    closeInfo: 'Schließen',
+
     // ── Language menu ──
     language: 'Sprache',
   },
@@ -169,6 +173,9 @@ const TRANSLATIONS = {
     resume: 'Resume',
     stopHold: 'Stop hold',
 
+    infoButton: 'ℹ️ Background & Research',
+    closeInfo: 'Close',
+
     language: 'Language',
   },
 
@@ -247,6 +254,9 @@ const TRANSLATIONS = {
     resume: 'Reanudar',
     stopHold: 'Detener retención',
 
+    infoButton: 'ℹ️ Información & Investigación',
+    closeInfo: 'Cerrar',
+
     language: 'Idioma',
   },
 
@@ -324,6 +334,9 @@ const TRANSLATIONS = {
     pause: 'Pause',
     resume: 'Reprendre',
     stopHold: 'Arrêter la rétention',
+
+    infoButton: 'ℹ️ Contexte & Recherche',
+    closeInfo: 'Fermer',
 
     language: 'Langue',
   },

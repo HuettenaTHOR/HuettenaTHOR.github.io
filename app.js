@@ -18,6 +18,9 @@ const $stop         = document.getElementById('stopBtn');
 const $toggleTimer  = document.getElementById('toggleTimerBtn');
 const $eyeIcon      = document.getElementById('eyeIcon');
 const $ringWrap     = document.querySelector('.timer-ring-wrap');
+const $infoOverlay  = document.getElementById('infoOverlay');
+const $infoBody     = document.getElementById('infoBody');
+const $infoCloseBtn = document.getElementById('infoCloseBtn');
 
 const CIRCUMFERENCE = 2 * Math.PI * 90;  // ring radius = 90
 $ringFg.style.strokeDasharray = CIRCUMFERENCE;
@@ -83,10 +86,20 @@ document.getElementById('backToHome').addEventListener('click', () => { history.
 document.getElementById('backToSettings').addEventListener('click', () => { history.back(); });
 
 document.querySelectorAll('.exercise-card').forEach(card => {
-  card.addEventListener('click', () => {
+  card.addEventListener('click', (e) => {
+    // If the ⓘ icon was clicked, open info modal instead of navigating
+    if (e.target.closest('.card-info-icon')) return;
     currentExercise = card.dataset.exercise;
     renderSettings(currentExercise);
     navigateTo('settings');
+  });
+});
+
+// ⓘ icons on home cards
+document.querySelectorAll('.card-info-icon').forEach(icon => {
+  icon.addEventListener('click', (e) => {
+    e.stopPropagation();
+    openInfoModal(icon.dataset.info);
   });
 });
 
@@ -123,6 +136,20 @@ function updateLangActiveStates() {
 setLanguage(getLang());
 updateLangActiveStates();
 
+// ─── Info / Research modal ─────────────────────────────
+function openInfoModal(exerciseType) {
+  $infoBody.innerHTML = renderResearchHTML(exerciseType);
+  $infoOverlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeInfoModal() {
+  $infoOverlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+$infoCloseBtn.addEventListener('click', closeInfoModal);
+$infoOverlay.addEventListener('click', (e) => { if (e.target === $infoOverlay) closeInfoModal(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && $infoOverlay.classList.contains('open')) closeInfoModal(); });
+
 // ─── Settings renderers ─────────────────────────────────
 function renderSettings(type) {
   const builders = { interval: settingsInterval, wimhof: settingsWimHof, box: settingsBox, '478': settings478 };
@@ -140,7 +167,10 @@ function settingsInterval() {
   let rests = [...saved.rests];
 
   const html = `
-    <h2>${t('intervalSettingsTitle')}</h2>
+    <div class="settings-header">
+      <h2>${t('intervalSettingsTitle')}</h2>
+      <button class="info-icon-btn" id="infoBtn" title="${t('infoButton')}">ⓘ</button>
+    </div>
     <p class="settings-desc">${t('intervalSettingsDesc')}</p>
     <div class="field">
       <label>${t('holdTimeLabel')}</label>
@@ -162,6 +192,8 @@ function settingsInterval() {
     <button class="start-btn" id="goBtn">${t('startExercise')}</button>
   `;
   $settingsBody.innerHTML = html;
+
+  document.getElementById('infoBtn').addEventListener('click', () => openInfoModal('interval'));
 
   function renderRests() {
     const ul = document.getElementById('intervalList');
@@ -210,7 +242,10 @@ function settingsWimHof() {
   });
 
   $settingsBody.innerHTML = `
-    <h2>${t('wimhofSettingsTitle')}</h2>
+    <div class="settings-header">
+      <h2>${t('wimhofSettingsTitle')}</h2>
+      <button class="info-icon-btn" id="infoBtn" title="${t('infoButton')}">ⓘ</button>
+    </div>
     <p class="settings-desc">${t('wimhofSettingsDesc')}</p>
     <div class="field">
       <label>${t('breathsPerRound')}</label>
@@ -234,6 +269,8 @@ function settingsWimHof() {
     <button class="start-btn" id="goBtn">${t('startExercise')}</button>
   `;
 
+  document.getElementById('infoBtn').addEventListener('click', () => openInfoModal('wimhof'));
+
   document.getElementById('goBtn').addEventListener('click', () => {
     const cfg = {
       breathCount: Math.max(10, +document.getElementById('whBreaths').value),
@@ -253,7 +290,10 @@ function settingsBox() {
   const saved = loadConfig('box', { count: 4, rounds: 4, showTimer: true });
 
   $settingsBody.innerHTML = `
-    <h2>${t('boxSettingsTitle')}</h2>
+    <div class="settings-header">
+      <h2>${t('boxSettingsTitle')}</h2>
+      <button class="info-icon-btn" id="infoBtn" title="${t('infoButton')}">ⓘ</button>
+    </div>
     <p class="settings-desc">${t('boxSettingsDesc')}</p>
     <div class="field">
       <label>${t('secondsPerSide')}</label>
@@ -273,6 +313,8 @@ function settingsBox() {
     <button class="start-btn" id="goBtn">${t('startExercise')}</button>
   `;
 
+  document.getElementById('infoBtn').addEventListener('click', () => openInfoModal('box'));
+
   document.getElementById('goBtn').addEventListener('click', () => {
     const cfg = {
       count: Math.max(2, +document.getElementById('boxCount').value),
@@ -291,7 +333,10 @@ function settings478() {
   const saved = loadConfig('478', { cycles: 4, showTimer: true });
 
   $settingsBody.innerHTML = `
-    <h2>${t('478SettingsTitle')}</h2>
+    <div class="settings-header">
+      <h2>${t('478SettingsTitle')}</h2>
+      <button class="info-icon-btn" id="infoBtn" title="${t('infoButton')}">ⓘ</button>
+    </div>
     <p class="settings-desc">${t('478SettingsDesc')}</p>
     <div class="field">
       <label>${t('cycles')}</label>
@@ -306,6 +351,8 @@ function settings478() {
     </div>
     <button class="start-btn" id="goBtn">${t('startExercise')}</button>
   `;
+
+  document.getElementById('infoBtn').addEventListener('click', () => openInfoModal('478'));
 
   document.getElementById('goBtn').addEventListener('click', () => {
     const cfg = {

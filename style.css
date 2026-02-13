@@ -203,6 +203,96 @@ body {
 }
 .start-btn:hover { opacity: .9; }
 
+/* ===== INFO ⓘ ICON (settings title + home cards) ===== */
+.settings-header {
+  display: flex; align-items: center; gap: .5rem; margin-bottom: .25rem;
+}
+.settings-header h2 { margin-bottom: 0; }
+
+.info-icon-btn {
+  background: none; border: 1px solid transparent; color: var(--text-dim);
+  font-size: 1.15rem; cursor: pointer; padding: 0;
+  width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; transition: color .2s, border-color .2s, background .2s;
+  flex-shrink: 0; line-height: 1;
+}
+.info-icon-btn:hover { color: var(--accent); border-color: var(--border); background: var(--surface2); }
+
+/* ⓘ on exercise cards (home screen) */
+.exercise-card { position: relative; }
+.card-info-icon {
+  position: absolute; top: .55rem; right: .55rem;
+  font-size: 1.1rem; color: var(--text-dim); opacity: .5;
+  cursor: pointer; z-index: 2; line-height: 1;
+  width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; transition: opacity .2s, color .2s, background .2s;
+}
+.card-info-icon:hover { opacity: 1; color: var(--accent); background: rgba(6, 40, 61, .6); }
+
+/* ===== INFO / RESEARCH MODAL ===== */
+.info-overlay {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: rgba(2, 27, 46, .88);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  align-items: flex-start; justify-content: center;
+  overflow-y: auto; padding: 2rem 1rem 3rem;
+}
+.info-overlay.open { display: flex; animation: fadeIn .2s ease; }
+
+.info-modal {
+  position: relative; max-width: 680px; width: 100%;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 2rem 1.75rem 2.5rem;
+  box-shadow: 0 12px 40px rgba(0,0,0,.5);
+}
+@media (max-width: 500px) { .info-modal { padding: 1.5rem 1rem 2rem; } }
+
+.info-close-btn {
+  position: absolute; top: 1rem; right: 1rem;
+  background: none; border: none; color: var(--text-dim);
+  font-size: 1.6rem; cursor: pointer; line-height: 1;
+  width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; transition: background .2s, color .2s;
+}
+.info-close-btn:hover { background: var(--surface2); color: var(--text); }
+
+.info-body { color: var(--text); line-height: 1.65; }
+
+.research-title {
+  font-size: 1.4rem; font-weight: 700; margin-bottom: 1.5rem;
+  padding-right: 2rem;
+}
+
+.research-heading {
+  font-size: 1.1rem; font-weight: 700; color: var(--accent);
+  margin: 1.5rem 0 .6rem; padding-bottom: .3rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.info-body p {
+  margin-bottom: .8rem; font-size: .92rem; color: var(--text);
+}
+
+.research-list {
+  list-style: none; padding: 0; margin: .5rem 0 .8rem;
+}
+.research-list li {
+  position: relative; padding-left: 1.2rem; margin-bottom: .5rem;
+  font-size: .92rem; line-height: 1.5;
+}
+.research-list li::before {
+  content: '•'; position: absolute; left: 0; color: var(--accent); font-weight: 700;
+}
+
+.research-refs {
+  padding-left: 1.5rem; margin-top: .5rem;
+}
+.research-refs li {
+  font-size: .82rem; color: var(--text-dim); margin-bottom: .6rem;
+  line-height: 1.5;
+}
+.research-refs li i { font-style: italic; }
+
 /* ===== EXERCISE SCREEN ===== */
 .exercise-display {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
