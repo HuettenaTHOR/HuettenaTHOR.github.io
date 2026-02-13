@@ -53,20 +53,40 @@ function beepLow()    { beep(440, 200); }
 function beepDouble() { beep(660, 100); setTimeout(() => beep(880, 100), 150); }
 function beepCountdown() { beep(550, 80, 0.15); }
 
-// ─── Navigation ─────────────────────────────────────────
-function show(screen) {
+// ─── Navigation (History API) ────────────────────────────
+const SCREENS = { home: $home, settings: $settings, exercise: $exercise };
+
+function showScreen(screen) {
   [$home, $settings, $exercise].forEach(s => s.classList.remove('active'));
   screen.classList.add('active');
 }
 
-document.getElementById('backToHome').addEventListener('click', () => { stopExercise(); show($home); });
-document.getElementById('backToSettings').addEventListener('click', () => { stopExercise(); show($settings); });
+function navigateTo(screenName, push = true) {
+  if (screenName === 'home') { stopExercise(); }
+  if (screenName === 'settings' && !currentExercise) { screenName = 'home'; }
+  showScreen(SCREENS[screenName]);
+  if (push) history.pushState({ screen: screenName }, '', '');
+}
+
+// Handle browser / mobile back button
+window.addEventListener('popstate', (e) => {
+  const target = e.state?.screen || 'home';
+  if (target === 'home' || target === 'settings') stopExercise();
+  showScreen(SCREENS[target] || $home);
+});
+
+// Set initial history state
+history.replaceState({ screen: 'home' }, '', '');
+
+// Back buttons (use history.back so browser back stack stays in sync)
+document.getElementById('backToHome').addEventListener('click', () => { history.back(); });
+document.getElementById('backToSettings').addEventListener('click', () => { history.back(); });
 
 document.querySelectorAll('.exercise-card').forEach(card => {
   card.addEventListener('click', () => {
     currentExercise = card.dataset.exercise;
     renderSettings(currentExercise);
-    show($settings);
+    navigateTo('settings');
   });
 });
 
@@ -350,7 +370,7 @@ $startPause.addEventListener('click', () => {
   $startPause.textContent = paused ? 'Resume' : 'Pause';
 });
 
-$stop.addEventListener('click', () => { stopExercise(); show($settings); });
+$stop.addEventListener('click', () => { stopExercise(); history.back(); });
 
 function stopExercise() {
   running = false;
@@ -375,7 +395,7 @@ function initExerciseScreen() {
   setTimerDisplay(0);
   setRingProgress(0);
   applyTimerVisibility(false); // start visible
-  show($exercise);
+  navigateTo('exercise');
 }
 
 // ═══════════════════════════════════════════════════════════

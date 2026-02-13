@@ -2,17 +2,17 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:        #0b0f1a;
-  --surface:   #141b2d;
-  --surface2:  #1c2540;
-  --border:    #263354;
-  --text:      #e2e8f0;
-  --text-dim:  #94a3b8;
-  --accent:    #38bdf8;
-  --accent2:   #818cf8;
+  --bg:        #021b2e;
+  --surface:   #06283d;
+  --surface2:  #0a3351;
+  --border:    #115270;
+  --text:      #e0f4f4;
+  --text-dim:  #7ab8c4;
+  --accent:    #2dd4bf;
+  --accent2:   #06b6d4;
   --hold:      #f472b6;
   --rest:      #34d399;
-  --inhale:    #38bdf8;
+  --inhale:    #22d3ee;
   --exhale:    #a78bfa;
   --danger:    #f87171;
   --radius:    14px;
@@ -22,11 +22,19 @@
 html { font-size: 16px; }
 body {
   font-family: var(--font);
-  background: var(--bg);
+  background: linear-gradient(180deg, #021b2e 0%, #04293a 40%, #063d5a 70%, #0a4f6e 100%);
   color: var(--text);
   min-height: 100dvh;
   overflow-x: hidden;
+  position: relative;
 }
+
+/* ===== OCEAN CANVAS ===== */
+#oceanCanvas {
+  position: fixed; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 0;
+}
+.screen { position: relative; z-index: 1; }
 
 /* ===== SCREENS ===== */
 .screen {
@@ -55,7 +63,7 @@ body {
 
 .logo {
   font-size: 3.5rem; font-weight: 800; letter-spacing: .25em;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  background: linear-gradient(135deg, #2dd4bf, #06b6d4, #38bdf8);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text;
 }
@@ -67,13 +75,14 @@ body {
 @media (max-width: 500px) { .exercise-grid { grid-template-columns: 1fr; } }
 
 .exercise-card {
-  background: var(--surface); border: 1px solid var(--border);
+  background: rgba(6, 40, 61, .75); border: 1px solid var(--border);
   border-radius: var(--radius); padding: 1.5rem 1rem;
   display: flex; flex-direction: column; align-items: center; gap: .5rem;
   cursor: pointer; transition: transform .15s, border-color .2s, background .2s;
   color: var(--text); text-align: center;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
 }
-.exercise-card:hover { transform: translateY(-3px); border-color: var(--accent); background: var(--surface2); }
+.exercise-card:hover { transform: translateY(-3px); border-color: var(--accent); background: rgba(10, 51, 81, .85); }
 .card-icon { font-size: 2rem; }
 .card-title { font-weight: 700; font-size: 1.05rem; }
 .card-desc { font-size: .82rem; color: var(--text-dim); line-height: 1.35; }
@@ -149,7 +158,7 @@ body {
 
 .start-btn {
   width: 100%; padding: .85rem; border: none; border-radius: var(--radius);
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  background: linear-gradient(135deg, #2dd4bf, #0891b2);
   color: #fff; font-size: 1.1rem; font-weight: 700; cursor: pointer;
   transition: opacity .2s;
 }
@@ -213,7 +222,7 @@ body {
 .ctrl-btn:hover { background: var(--surface2); border-color: var(--accent); }
 .ctrl-btn.primary {
   width: auto; padding: 0 2rem; border-radius: var(--radius);
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  background: linear-gradient(135deg, #2dd4bf, #0891b2);
   border: none; color: #fff; font-weight: 700; font-size: 1.05rem;
 }
 .ctrl-btn.primary:hover { opacity: .9; }
@@ -226,3 +235,431 @@ body {
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ===========================================================
+   SEA CREATURES – CSS/HTML-based, spawned by ocean.js
+   =========================================================== */
+#oceanCreatures {
+  position: fixed; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 0; overflow: hidden;
+}
+
+/* ─── Base creature ───────────────────────────────────── */
+.creature {
+  position: absolute;
+  --rot: 0deg;
+  will-change: transform;
+}
+.creature-turtle {
+  --rot: 90deg;
+}
+.creature.swim-left {
+  right: -20vw;
+  animation-name: swimLeft;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+.creature.swim-right {
+  left: -20vw;
+  animation-name: swimRight;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+/* swim-left: enter from right, exit left — scaleX(-1) flips creature to face left */
+@keyframes swimLeft {
+  0%   { transform: translateX(0)      translateY(0)             scale(var(--scale,1)) scaleX(-1) rotate(var(--rot)); }
+  8%   { transform: translateX(-10vw)  translateY(calc(-1 * var(--wy, 1vh)))  scale(var(--scale,1)) scaleX(-1) rotate(calc(var(--rot) + var(--wr, 2deg))); }
+  22%  { transform: translateX(-27vw)  translateY(var(--wy, 1vh))             scale(var(--scale,1)) scaleX(-1) rotate(calc(var(--rot) - var(--wr, 2deg))); }
+  38%  { transform: translateX(-46vw)  translateY(calc(-0.7 * var(--wy, 1vh))) scale(var(--scale,1)) scaleX(-1) rotate(calc(var(--rot) + calc(0.6 * var(--wr, 2deg)))); }
+  55%  { transform: translateX(-66vw)  translateY(calc(0.8 * var(--wy, 1vh)))  scale(var(--scale,1)) scaleX(-1) rotate(calc(var(--rot) - calc(0.8 * var(--wr, 2deg)))); }
+  72%  { transform: translateX(-86vw)  translateY(calc(-0.5 * var(--wy, 1vh))) scale(var(--scale,1)) scaleX(-1) rotate(calc(var(--rot) + calc(0.4 * var(--wr, 2deg)))); }
+  88%  { transform: translateX(-107vw) translateY(calc(0.3 * var(--wy, 1vh)))  scale(var(--scale,1)) scaleX(-1) rotate(calc(var(--rot) - calc(0.3 * var(--wr, 2deg)))); }
+  100% { transform: translateX(-125vw) translateY(0)             scale(var(--scale,1)) scaleX(-1) rotate(var(--rot)); }
+}
+
+/* swim-right: enter from left, exit right — no flip, creature already faces right */
+@keyframes swimRight {
+  0%   { transform: translateX(0)      translateY(0)             scale(var(--scale,1)) rotate(var(--rot)); }
+  10%  { transform: translateX(12vw)   translateY(var(--wy, 1vh))             scale(var(--scale,1)) rotate(calc(var(--rot) - var(--wr, 2deg))); }
+  25%  { transform: translateX(30vw)   translateY(calc(-0.8 * var(--wy, 1vh))) scale(var(--scale,1)) rotate(calc(var(--rot) + var(--wr, 2deg))); }
+  42%  { transform: translateX(50vw)   translateY(calc(0.6 * var(--wy, 1vh)))  scale(var(--scale,1)) rotate(calc(var(--rot) - calc(0.7 * var(--wr, 2deg)))); }
+  58%  { transform: translateX(70vw)   translateY(calc(-0.9 * var(--wy, 1vh))) scale(var(--scale,1)) rotate(calc(var(--rot) + calc(0.5 * var(--wr, 2deg)))); }
+  75%  { transform: translateX(90vw)   translateY(calc(0.4 * var(--wy, 1vh)))  scale(var(--scale,1)) rotate(calc(var(--rot) - calc(0.4 * var(--wr, 2deg)))); }
+  90%  { transform: translateX(112vw)  translateY(calc(-0.2 * var(--wy, 1vh))) scale(var(--scale,1)) rotate(calc(var(--rot) + calc(0.2 * var(--wr, 2deg)))); }
+  100% { transform: translateX(125vw)  translateY(0)             scale(var(--scale,1)) rotate(var(--rot)); }
+}
+
+/* =========================================================
+   SHARK  (based on CSS-art reference, ocean-themed colors)
+   ========================================================= */
+.creature-shark {
+  width: 30vmin;
+  height: 10vmin;
+}
+.creature-shark div {
+  position: absolute;
+  box-sizing: border-box;
+}
+
+.s-bubbles {
+  width: 2vmin; height: 2vmin;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  top: 50%; left: 50%;
+  transform: translate(12vmin, -8vmin);
+  box-shadow:
+    -2vmin -1.25vmin 0 -0.5vmin rgba(255,255,255,0.2),
+    -0.75vmin -2.75vmin 0 -0.25vmin rgba(255,255,255,0.35);
+}
+
+.s-body {
+  left: 0; width: 30vmin; height: 20vmin;
+  border-radius: 50%;
+  transform: translate(0, -50%);
+  clip-path: polygon(0% 50%, 100% 50%, 100% 90%, 70% 70%, 90% 100%, 0% 100%);
+  background: #5fb8b0;
+}
+
+.s-eye {
+  width: 1.5vmin; height: 1.5vmin;
+  border-radius: 50%;
+  background: white;
+  box-shadow: inset -0.2vmin -0.45vmin 0 0.6vmin;
+  top: 1.5vmin; right: 4vmin;
+}
+
+.s-aleta, .s-tail, .s-fin {
+  width: 10vmin; height: 8vmin;
+  box-shadow: 4vmin -0.5vmin #5fb8b0;
+  border-radius: 50%;
+  top: -1vmin;
+  transform: translate(-130%, -3vmin) rotate(10deg);
+}
+
+.s-aleta {
+  box-shadow: 5vmin 0 #4ea8a0;
+  top: 5vmin; left: 3vmin;
+  transform: none;
+  clip-path: polygon(0% 50%, 200% 40%, 200% 100%, 0% 100%);
+}
+
+.s-fin {
+  box-shadow: 5vmin 0 #5fb8b0;
+  left: 15vmin;
+}
+
+.s-gill {
+  width: 6vmin; height: 9vmin;
+  border-radius: 100%;
+  box-shadow: -2vmin 0 0 -1.7vmin rgba(0,0,0,0.2);
+  left: 18.5vmin;
+}
+.s-gill-2 { transform: translate(-1vmin, 0) scale(0.9); }
+.s-gill-3 { transform: translate(-2vmin, 0) scale(0.8); }
+
+/* =========================================================
+   FISH
+   ========================================================= */
+.creature-fish {
+  width: 5vmin; height: 2.6vmin;
+}
+.fish-body {
+  position: absolute; width: 100%; height: 80%;
+  top: 10%;
+  background: radial-gradient(ellipse 60% 100% at 55% 50%, var(--fish-color, #3fbfad), #1a7a6d);
+  border-radius: 60% 45% 50% 55%;
+}
+.fish-tail {
+  position: absolute; width: 28%; height: 70%;
+  top: 14%; left: -8%;
+  background: var(--fish-color, #3fbfad);
+  clip-path: polygon(100% 50%, 0% 0%, 0% 100%);
+  animation: fishTailSwish .8s ease-in-out infinite alternate;
+  transform-origin: right center;
+}
+.fish-eye {
+  position: absolute; width: .6vmin; height: .6vmin;
+  top: 28%; left: 68%;
+  background: #0e2f2f; border-radius: 50%;
+  box-shadow: inset .1vmin .08vmin 0 rgba(255,255,255,.5);
+}
+.fish-dorsal {
+  position: absolute; width: 22%; height: 32%;
+  top: -14%; left: 38%;
+  background: var(--fish-color, #3fbfad);
+  clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+  opacity: .8;
+}
+.fish-ventral {
+  position: absolute; width: 14%; height: 22%;
+  bottom: 0; left: 50%;
+  background: var(--fish-color, #3fbfad);
+  clip-path: polygon(50% 100%, 100% 0%, 0% 0%);
+  opacity: .7;
+}
+@keyframes fishTailSwish {
+  from { transform: rotate(-6deg); }
+  to   { transform: rotate(6deg); }
+}
+
+/* =========================================================
+   TURTLE  (based on CSS-art reference, ocean-themed colors)
+   Uses --tg1/--tg2/--tg3 (greens) --tb1/--tb2/--tb3 (browns)
+   ========================================================= */
+.creature-turtle {
+  --tg1: #5fb89a;
+  --tg2: #48956e;
+  --tg3: #2e6843;
+  --tb1: #3a7a5e;
+  --tb2: #2d6248;
+  --tb3: #1a3e2c;
+  width: 70vmin;
+  height: 60vmin;
+}
+
+.creature-turtle > div {
+  position: absolute;
+}
+
+/* Turtle bob uses margin-top so it doesn't conflict with the transform-based swim */
+.creature-turtle.swim-left,
+.creature-turtle.swim-right {
+  animation-name: swimLeft, turtleSwim;
+  animation-timing-function: linear, ease-in-out;
+  animation-fill-mode: forwards, none;
+  animation-iteration-count: 1, infinite;
+}
+.creature-turtle.swim-right {
+  animation-name: swimRight, turtleSwim;
+}
+
+@keyframes turtleSwim {
+  0%   { margin-top: 0; }
+  30%  { margin-top: -3vmin; }
+  100% { margin-top: 0; }
+}
+
+/* Body / Shell */
+.t-body {
+  width: 40vmin; height: 33vmin;
+  border-radius: 50vmin;
+  top: 17vmin; left: 15vmin;
+  border: 1.75vmin solid var(--tb3);
+  box-sizing: border-box;
+  clip-path: ellipse(50% 50% at 50% 50%);
+  transform: rotate(90deg);
+  background:
+    conic-gradient(at 0.5vmin 6.93vmin, transparent 270deg, var(--tb3) 0deg),
+    conic-gradient(at calc(100% - 0.5vmin) 6.93vmin, var(--tb3) 90deg, transparent 0deg),
+    conic-gradient(from -60deg at 50% 10.39vmin, var(--tb2) 120deg, transparent 120deg),
+    conic-gradient(from -60deg at 50% 11.39vmin, var(--tb3) 120deg, transparent 120deg),
+    conic-gradient(from 120deg at 50% 18.82vmin, var(--tb2) 120deg, transparent 120deg),
+    conic-gradient(from 120deg at 50% 17.82vmin, var(--tb3) 120deg, transparent 120deg),
+    linear-gradient(90deg, var(--tb1) calc(50% - 0.5vmin), var(--tb3) 0 calc(50% + 0.5vmin), var(--tb1) 0);
+  background-size: 13vmin;
+}
+.t-body::before, .t-body::after {
+  content: "";
+  position: absolute;
+  width: 12vmin; height: 2vmin;
+  background: var(--tb2);
+  border-radius: 100% 150% 0 0;
+  top: -0.75vmin; left: 13.35vmin;
+  transform: rotate(1deg);
+}
+.t-body::after {
+  top: 28.05vmin; left: 13.35vmin;
+  transform: rotate(-2deg);
+  border-radius: 0 0 150% 100%;
+}
+.t-body span {
+  position: absolute;
+  background:
+    radial-gradient(ellipse 105vmin 56vmin at 50% -40%, transparent 18%, rgba(26,62,44,.5) 18.5%),
+    linear-gradient(90deg, transparent 12.35vmin, var(--tb3) 12.5vmin, var(--tb3) 13.25vmin, transparent 13.25vmin),
+    linear-gradient(90deg, transparent 25.35vmin, var(--tb3) 25.5vmin, var(--tb3) 26.25vmin, transparent 26.25vmin);
+  width: 100%; height: 45%;
+  z-index: 1; left: 0; top: 22vmin;
+}
+
+/* Body tail piece */
+.t-body-tail {
+  background: var(--tb1);
+  width: 7vmin; height: 7vmin;
+  bottom: 6vmin;
+  transform: rotate(45deg);
+  left: calc(50% - 3.25vmin);
+  border-radius: 500% 50% 0 50%;
+}
+.t-body-tail::before, .t-body-tail::after {
+  content: ""; position: absolute;
+  width: 1vmin; height: 6vmin;
+  background: var(--tb3);
+  top: 1vmin; left: 6.75vmin;
+  transform: rotate(12deg);
+  border-radius: 1vmin;
+}
+.t-body-tail::after {
+  top: 4.25vmin; left: 3.65vmin;
+  transform: rotate(-102deg);
+}
+
+/* Head */
+.t-head {
+  background:
+    radial-gradient(circle at 53% 44%, var(--tg3) 15%, transparent 16%),
+    radial-gradient(circle at 25% 50%, var(--tg3) 9%, transparent 10%),
+    radial-gradient(circle at 32% 26%, var(--tg3) 8%, transparent 9%),
+    radial-gradient(circle at 50% 20%, var(--tg3) 5%, transparent 6%),
+    radial-gradient(circle at 38% 61%, var(--tg3) 5%, transparent 6%),
+    radial-gradient(circle at 16% 35%, var(--tg3) 4%, transparent 5%),
+    radial-gradient(ellipse at 20% 70%, var(--tg1) 63%, var(--tg2) 64%),
+    var(--tg1);
+  width: 12.5vmin; height: 12.5vmin;
+  border-radius: 100% 100% 50%;
+  transform: rotate(-135deg);
+  left: 29vmin; top: 3vmin;
+}
+.t-head::before, .t-head::after {
+  content: ""; position: absolute;
+  background: #556;
+  width: 0.6vmin; height: 0.35vmin;
+  bottom: 0.95vmin; left: 10.75vmin;
+  border-radius: 100% 80%;
+  transform: rotate(20deg);
+}
+.t-head::after {
+  transform: rotate(66deg);
+  left: 11.1vmin; bottom: 1.4vmin;
+}
+
+/* Eyes */
+.t-eyes {
+  position: absolute;
+  width: 10vmin; height: 2vmin;
+  transform: rotate(-45deg);
+  top: 8.5vmin; left: 4.5vmin;
+}
+.t-eyes::before, .t-eyes::after {
+  content: ""; position: absolute;
+  background: #101010;
+  width: 1vmin; height: 1vmin;
+  border-radius: 0 50% 0 50%;
+  border: 0.5vmin solid var(--tg1);
+}
+.t-eyes::after {
+  right: 0;
+  transform: rotate(90deg);
+  border-color: var(--tg2);
+}
+
+/* Front legs */
+.t-leg1, .t-leg2 {
+  background:
+    radial-gradient(ellipse 20vmin 12vmin at 40% 60%, var(--tg1) 42%, var(--tg2) 43%),
+    var(--tg1);
+  width: 9vmin; height: 11vmin;
+  left: 15.5vmin; top: 15vmin;
+  transform: rotate(40deg);
+  border-radius: 25% 0 0 0;
+  animation: tLegOne 5s infinite;
+}
+.t-leg1::before, .t-leg2::before {
+  content: ""; position: absolute;
+  background:
+    radial-gradient(circle at 41% 51%, var(--tg3) 15%, transparent 17%),
+    radial-gradient(circle at 78% 8%, var(--tg3) 9%, transparent 10%),
+    radial-gradient(circle at 52% 20%, var(--tg3) 6%, transparent 7%),
+    radial-gradient(circle at 33% 71%, var(--tg3) 7%, transparent 8%),
+    radial-gradient(circle at 8% 38%, var(--tg3) 11%, transparent 13%),
+    var(--tg1);
+  width: 6vmin; height: 13vmin;
+  border-radius: 80% 10%;
+  transform: rotate(-16deg);
+  left: -3vmin; top: 0.75vmin;
+  border-left: 1vmin solid var(--tg2);
+  border-top: 1.55vmin solid var(--tg2);
+  border-right: 0; border-bottom: 0;
+}
+.t-leg2 {
+  transform: rotate(-40deg) rotateY(180deg);
+  left: 46vmin;
+  animation: tLegTwo 5s infinite;
+}
+
+@keyframes tLegOne {
+  50% { transform: rotate(40deg) rotate(-40deg) translateX(5vmin) translateY(4vmin); }
+}
+@keyframes tLegTwo {
+  50% { transform: rotate(-40deg) rotateY(180deg) rotate(-40deg) translateX(5vmin) translateY(4vmin); }
+}
+
+/* Rear legs */
+.t-leg3, .t-leg4 {
+  background:
+    radial-gradient(circle at 47% 23%, var(--tg3) 4%, transparent 5%),
+    radial-gradient(circle at 40% 41%, var(--tg3) 11%, transparent 12%),
+    radial-gradient(circle at 58% 52%, var(--tg3) 4%, transparent 6%),
+    radial-gradient(circle at 24% 60%, var(--tg3) 13%, transparent 14%),
+    radial-gradient(circle at 15% 27%, var(--tg3) 7%, transparent 8%),
+    var(--tg1);
+  width: 5vmin; height: 13vmin;
+  bottom: 2vmin; left: 21.25vmin;
+  border-radius: 45% 30% 20% 200%;
+  transform: rotate(-3deg);
+  animation: tLegThree 5s infinite;
+}
+.t-leg3::before, .t-leg4::before {
+  content: ""; position: absolute;
+  width: 10vmin; height: 16vmin;
+  bottom: -1.25vmin; left: -0.25vmin;
+  border-radius: 100%;
+  border: 1vmin solid transparent;
+  border-left: 1.1vmin solid var(--tg2);
+  transform: rotate(-8deg);
+  border-bottom-width: 0.5vmin;
+}
+.t-leg3::after, .t-leg4::after {
+  content: ""; position: absolute;
+  width: 2vmin; height: 3vmin;
+  border-radius: 100%;
+  border: 2.5vmin solid transparent;
+  border-left-color: var(--tg1);
+  top: 4vmin; left: 2.75vmin;
+  transform: rotate(43deg);
+}
+.t-leg4 {
+  transform: rotate(3deg) rotateY(180deg);
+  left: 44.5vmin;
+  animation: tLegFour 5s infinite;
+}
+
+@keyframes tLegThree {
+  50% { transform: rotate(-5deg); }
+}
+@keyframes tLegFour {
+  0%   { transform: rotate(5deg) rotateY(180deg); }
+  50%  { transform: rotate(3deg) rotateY(180deg); }
+  100% { transform: rotate(5deg) rotateY(180deg); }
+}
+
+/* Tail */
+.t-tail {
+  background:
+    radial-gradient(circle at 30% 22%, var(--tg3) 4%, transparent 5%),
+    radial-gradient(circle at 38% 31%, var(--tg3) 7%, transparent 8%),
+    radial-gradient(circle at 40% 54%, var(--tg3) 4%, transparent 5%),
+    radial-gradient(circle at 30% 44%, var(--tg3) 10%, transparent 11%),
+    linear-gradient(84deg, var(--tg2) 2vmin, var(--tg1) 2.25vmin);
+  width: 4vmin; height: 8vmin;
+  left: 33vmin; bottom: -2vmin;
+  clip-path: polygon(50% 100%, 10% 0, 95% 0);
+  border-radius: 0 0 80% 0;
+  transform-origin: center top;
+  transform: rotate(5deg);
+  animation: tTailMove 5s infinite;
+}
+@keyframes tTailMove {
+  50% { transform: rotate(-5deg); }
+}
