@@ -93,10 +93,11 @@
      PART 2 — CSS Creatures spawned into the DOM
      ====================================================== */
 
-  // Container for all swimming creatures (sits behind content)
+  // Container for all swimming creatures (sits between canvas and content)
   const ocean = document.createElement('div');
   ocean.id = 'oceanCreatures';
-  document.body.insertBefore(ocean, document.body.firstChild);
+  // Insert right after the canvas so DOM order matches z-index layering
+  canvas.insertAdjacentElement('afterend', ocean);
 
   // ─── Creature HTML builders ─────────────────────────────
 

@@ -8,6 +8,10 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🫁</text></svg>">
 </head>
 <body>
+  <!-- ocean background (must be first for mobile z-index stacking) -->
+  <div id="oceanBg"></div>
+  <canvas id="oceanCanvas"></canvas>
+
   <!-- ============ LANDING / HOME ============ -->
   <section id="home" class="screen active">
     <div class="home-content">
@@ -84,9 +88,6 @@
       </div>
     </div>
   </section>
-
-  <!-- ocean background -->
-  <canvas id="oceanCanvas"></canvas>
 
   <!-- scripts -->
   <script src="ocean.js"></script>

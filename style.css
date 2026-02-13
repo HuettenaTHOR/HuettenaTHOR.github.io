@@ -22,19 +22,26 @@
 html { font-size: 16px; }
 body {
   font-family: var(--font);
-  background: linear-gradient(180deg, #021b2e 0%, #04293a 40%, #063d5a 70%, #0a4f6e 100%);
+  background: none;
   color: var(--text);
   min-height: 100dvh;
   overflow-x: hidden;
   position: relative;
 }
 
+/* ===== OCEAN BACKGROUND LAYER ===== */
+#oceanBg {
+  position: fixed; inset: 0; width: 100%; height: 100%;
+  background: linear-gradient(180deg, #021b2e 0%, #04293a 40%, #063d5a 70%, #0a4f6e 100%);
+  z-index: 0;
+}
+
 /* ===== OCEAN CANVAS ===== */
 #oceanCanvas {
   position: fixed; inset: 0; width: 100%; height: 100%;
-  pointer-events: none; z-index: 0;
+  pointer-events: none; z-index: 1;
 }
-.screen { position: relative; z-index: 1; }
+.screen { position: relative; z-index: 3; }
 
 /* ===== SCREENS ===== */
 .screen {
@@ -241,7 +248,7 @@ body {
    =========================================================== */
 #oceanCreatures {
   position: fixed; inset: 0; width: 100%; height: 100%;
-  pointer-events: none; z-index: 0; overflow: hidden;
+  pointer-events: none; z-index: 2; overflow: hidden;
 }
 
 /* ─── Base creature ───────────────────────────────────── */
