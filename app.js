@@ -35,6 +35,24 @@ let paused          = false;
 let rafId           = null;
 let stepTimeout     = null;
 let countdownInterval = null;
+let wakeLockSentinel = null;
+
+// ─── Wake Lock — keeps screen on during exercises ───────
+async function requestWakeLock() {
+  try {
+    if ('wakeLock' in navigator) {
+      wakeLockSentinel = await navigator.wakeLock.request('screen');
+      wakeLockSentinel.addEventListener('release', () => { wakeLockSentinel = null; });
+    }
+  } catch (_) { /* not supported or denied — silent fail */ }
+}
+function releaseWakeLock() {
+  try { if (wakeLockSentinel) { wakeLockSentinel.release(); wakeLockSentinel = null; } } catch (_) {}
+}
+// Re-acquire wake lock when returning to the tab (browser releases it on visibility change)
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && running) requestWakeLock();
+});
 
 // ─── Audio helpers (short beeps via AudioContext) ───────
 let audioCtx = null;
@@ -427,36 +445,49 @@ function setRingProgress(fraction) {
 
 function setRingColor(color) { $ringFg.style.stroke = color; }
 
-// ─── Core countdown mechanism ───────────────────────────
+// ─── Core countdown mechanism (wall-clock based) ───────
 function countdown(totalSecs, { onTick, onDone, color, isHoldPhase = false }) {
   return new Promise((resolve) => {
     if (!running) { resolve(); return; }
     setRingColor(color || 'var(--accent)');
-    let remaining = totalSecs;
-    setTimerDisplay(remaining);
+    setTimerDisplay(totalSecs);
     setRingProgress(0);
     applyTimerVisibility(isHoldPhase);
 
+    let startTime = Date.now();
+    let pausedAccum = 0;       // ms spent paused
+    let pauseStart = 0;
+    let lastDispSec = totalSecs; // track displayed second to fire beep once
+
     countdownInterval = setInterval(() => {
       if (!running) { clearInterval(countdownInterval); resolve(); return; }
-      if (paused) return;
+      if (paused) {
+        if (!pauseStart) pauseStart = Date.now();
+        return;
+      }
+      if (pauseStart) { pausedAccum += Date.now() - pauseStart; pauseStart = 0; }
 
-      remaining -= 1;
-      if (remaining < 0) remaining = 0;
-      setTimerDisplay(remaining);
-      setRingProgress(1 - remaining / totalSecs);
+      const elapsed = (Date.now() - startTime - pausedAccum) / 1000;
+      let remaining = Math.max(0, Math.ceil(totalSecs - elapsed));
 
-      // countdown beep for last 3 seconds
-      if (remaining <= 3 && remaining > 0) beepCountdown();
+      // Only update display when the displayed second changes
+      if (remaining !== lastDispSec) {
+        lastDispSec = remaining;
+        setTimerDisplay(remaining);
+        setRingProgress(1 - remaining / totalSecs);
+        if (remaining <= 3 && remaining > 0) beepCountdown();
+        if (onTick) onTick(remaining);
+      }
 
-      if (remaining <= 0) {
+      if (elapsed >= totalSecs) {
         clearInterval(countdownInterval);
+        setTimerDisplay(0);
+        setRingProgress(1);
         beepDouble();
         if (onDone) onDone();
         resolve();
       }
-      if (onTick) onTick(remaining);
-    }, 1000);
+    }, 250); // check 4×/sec for snappy recovery after sleep
   });
 }
 
@@ -475,6 +506,7 @@ function stopExercise() {
   clearInterval(countdownInterval);
   clearTimeout(stepTimeout);
   cancelAnimationFrame(rafId);
+  releaseWakeLock();
   $ringWrap.classList.remove('breathing');
   $ringWrap.classList.remove('timer-hidden');
   $timerText.classList.remove('hidden');
@@ -484,6 +516,7 @@ function stopExercise() {
 
 function initExerciseScreen() {
   running = true; paused = false;
+  requestWakeLock();
   $startPause.textContent = t('pause');
   $phaseLabel.textContent = t('getReady');
   $phaseLabel.className = 'phase-label';
@@ -623,11 +656,14 @@ function countUp(color) {
     setRingProgress(0);
     $ringFg.style.strokeDashoffset = 0;  // full ring
     applyTimerVisibility(true);  // this is a hold phase
-    let elapsed = 0;
     paused = false;
     $startPause.textContent = t('stopHold');
 
+    const startTime = Date.now();
+    let lastDispSec = 0;
+
     const iv = setInterval(() => {
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
       if (!running) { clearInterval(iv); resolve(elapsed); return; }
       if (paused) {
         clearInterval(iv);
@@ -637,9 +673,11 @@ function countUp(color) {
         resolve(elapsed);
         return;
       }
-      elapsed++;
-      setTimerDisplay(elapsed);
-    }, 1000);
+      if (elapsed !== lastDispSec) {
+        lastDispSec = elapsed;
+        setTimerDisplay(elapsed);
+      }
+    }, 250); // 4×/sec for accurate recovery after phone sleep
   });
 }
 
@@ -732,6 +770,7 @@ async function start478(cfg) {
 // ─── Finish ─────────────────────────────────────────────
 function finishExercise() {
   running = false;
+  releaseWakeLock();
   if (sessionData) sessionData.endTime = Date.now();
   beep(523, 200); setTimeout(() => beep(659, 200), 220); setTimeout(() => beep(784, 300), 440);
   showStatsScreen();
