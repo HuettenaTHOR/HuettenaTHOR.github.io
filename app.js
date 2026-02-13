@@ -88,17 +88,28 @@ document.getElementById('backToSettings').addEventListener('click', () => { hist
 document.querySelectorAll('.exercise-card').forEach(card => {
   card.addEventListener('click', (e) => {
     // If the ⓘ icon was clicked, open info modal instead of navigating
-    if (e.target.closest('.card-info-icon')) return;
+    try {
+      if (e.target.classList && e.target.classList.contains('card-info-icon')) return;
+      if (e.target.closest && e.target.closest('.card-info-icon')) return;
+    } catch (_) { /* Opera safety */ }
     currentExercise = card.dataset.exercise;
     renderSettings(currentExercise);
     navigateTo('settings');
+  });
+  // Keyboard support (Enter/Space) since cards are now <div> not <button>
+  card.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      card.click();
+    }
   });
 });
 
 // ⓘ icons on home cards
 document.querySelectorAll('.card-info-icon').forEach(icon => {
   icon.addEventListener('click', (e) => {
-    e.stopPropagation();
+    try { e.stopPropagation(); } catch (_) {}
+    e.preventDefault();
     openInfoModal(icon.dataset.info);
   });
 });

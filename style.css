@@ -120,7 +120,11 @@ body {
   cursor: pointer; transition: transform .15s, border-color .2s, background .2s;
   color: var(--text); text-align: center;
   backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  -webkit-user-select: none; user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
 }
+.exercise-card:focus-visible { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
 .exercise-card:hover { transform: translateY(-3px); border-color: var(--accent); background: rgba(10, 51, 81, .85); }
 .card-icon { font-size: 2rem; }
 .card-title { font-weight: 700; font-size: 1.05rem; }
@@ -219,15 +223,19 @@ body {
 .info-icon-btn:hover { color: var(--accent); border-color: var(--border); background: var(--surface2); }
 
 /* ⓘ on exercise cards (home screen) */
-.exercise-card { position: relative; }
+.exercise-card { position: relative; cursor: pointer; }
+.exercise-card > *:not(.card-info-icon) { pointer-events: none; }
 .card-info-icon {
+  /* reset button defaults */
+  appearance: none; -webkit-appearance: none; font-family: inherit;
   position: absolute; top: .55rem; right: .55rem;
-  font-size: 1.1rem; color: var(--text-dim); opacity: .5;
+  font-size: 1.1rem; color: var(--text-dim); opacity: .55;
   cursor: pointer; z-index: 2; line-height: 1;
-  width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;
-  border-radius: 50%; transition: opacity .2s, color .2s, background .2s;
+  width: 26px; height: 26px; display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; border: 1px solid transparent; background: transparent;
+  pointer-events: auto; transition: opacity .2s, color .2s, background .2s, border-color .2s;
 }
-.card-info-icon:hover { opacity: 1; color: var(--accent); background: rgba(6, 40, 61, .6); }
+.card-info-icon:hover { opacity: 1; color: var(--accent); border-color: var(--border); background: rgba(6, 40, 61, .6); }
 
 /* ===== INFO / RESEARCH MODAL ===== */
 .info-overlay {
