@@ -114,6 +114,20 @@ const TRANSLATIONS = {
     statsHeldFor: 'Angehalten: {0}',
     statsMin: 'min',
     statsSec: 's',
+
+    // ── Trainingsübersicht ──
+    historyBtn: 'Trainingsübersicht',
+    historyTitle: 'Trainingsübersicht',
+    historyOverview: 'Deine Statistiken',
+    historyTotalSessions: 'Trainingseinheiten',
+    historyTotalTrainingTime: 'Gesamte Trainingszeit',
+    historyStreak: 'Tage in Folge',
+    historyTotalHolds: 'Atemstopps gesamt',
+    historyByExercise: 'Nach Übung',
+    historyRecentSessions: 'Letzte Einheiten',
+    historyNoSessions: 'Noch keine Trainingseinheiten gespeichert.',
+    historyShowing: '{0} von {1} angezeigt',
+    loading: 'Laden…',
   },
 
   en: {
@@ -214,19 +228,7 @@ const TRANSLATIONS = {
     statsMin: 'min',
     statsSec: 's',
 
-    // ── Auth ──
-    authLogin: 'Login',
-    authLoginTitle: '🔒 Login',
-    authRegisterTitle: '📝 Register',
-    authUsername: 'Username',
-    authPassword: 'Password',
-    authLoginBtn: 'Login',
-    authRegisterBtn: 'Register',
-    authNoAccount: 'Don\'t have an account?',
-    authHasAccount: 'Already have an account?',
-    authLogout: 'Logout',
-
-    // ── History / Overview ──
+    // ── Training Overview ──
     historyBtn: 'Training Overview',
     historyTitle: 'Training Overview',
     historyOverview: 'Your Statistics',
@@ -339,19 +341,7 @@ const TRANSLATIONS = {
     statsMin: 'min',
     statsSec: 's',
 
-    // ── Auth ──
-    authLogin: 'Iniciar sesión',
-    authLoginTitle: '🔒 Iniciar sesión',
-    authRegisterTitle: '📝 Registrarse',
-    authUsername: 'Nombre de usuario',
-    authPassword: 'Contraseña',
-    authLoginBtn: 'Iniciar sesión',
-    authRegisterBtn: 'Registrarse',
-    authNoAccount: '¿No tienes cuenta?',
-    authHasAccount: '¿Ya tienes cuenta?',
-    authLogout: 'Cerrar sesión',
-
-    // ── History / Overview ──
+    // ── Resumen de entreno ──
     historyBtn: 'Resumen de entreno',
     historyTitle: 'Resumen de Entreno',
     historyOverview: 'Tus estadísticas',
@@ -464,19 +454,7 @@ const TRANSLATIONS = {
     statsMin: 'min',
     statsSec: 's',
 
-    // ── Auth ──
-    authLogin: 'Connexion',
-    authLoginTitle: '🔒 Connexion',
-    authRegisterTitle: '📝 Inscription',
-    authUsername: 'Nom d\'utilisateur',
-    authPassword: 'Mot de passe',
-    authLoginBtn: 'Se connecter',
-    authRegisterBtn: 'S\'inscrire',
-    authNoAccount: 'Pas encore de compte ?',
-    authHasAccount: 'Déjà un compte ?',
-    authLogout: 'Déconnexion',
-
-    // ── History / Overview ──
+    // ── Historique ──
     historyBtn: 'Historique',
     historyTitle: 'Historique d\'entraînement',
     historyOverview: 'Vos statistiques',
