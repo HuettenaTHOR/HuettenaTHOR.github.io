@@ -31,6 +31,13 @@
         </div>
       </div>
 
+      <!-- History button -->
+      <div class="home-actions">
+        <button class="home-action-btn" id="historyBtn" title="History">
+          📊 <span data-i18n="historyBtn">Trainingsübersicht</span>
+        </button>
+      </div>
+
       <div class="exercise-grid">
         <!-- Interval Breath-Hold -->
         <div class="exercise-card" data-exercise="interval" role="button" tabindex="0">
@@ -113,6 +120,14 @@
     </div>
   </section>
 
+  <!-- ============ TRAINING HISTORY SCREEN ============ -->
+  <section id="history" class="screen">
+    <button class="back-btn" id="backFromHistory" data-i18n="back">← Zurück</button>
+    <div class="stats-content" id="historyContent">
+      <!-- dynamically filled -->
+    </div>
+  </section>
+
   <!-- ============ INFO / RESEARCH MODAL ============ -->
   <div class="info-overlay" id="infoOverlay">
     <div class="info-modal">
@@ -125,6 +140,7 @@
   <script src="ocean.js"></script>
   <script src="i18n.js"></script>
   <script src="research.js"></script>
+  <script src="api.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

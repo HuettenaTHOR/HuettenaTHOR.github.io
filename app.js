@@ -23,6 +23,7 @@ const $ringWrap     = document.querySelector('.timer-ring-wrap');
 const $infoOverlay  = document.getElementById('infoOverlay');
 const $infoBody     = document.getElementById('infoBody');
 const $infoCloseBtn = document.getElementById('infoCloseBtn');
+const $history      = document.getElementById('history');
 
 const CIRCUMFERENCE = 2 * Math.PI * 90;  // ring radius = 90
 $ringFg.style.strokeDasharray = CIRCUMFERENCE;
@@ -77,10 +78,10 @@ function beepDouble() { beep(660, 100); setTimeout(() => beep(880, 100), 150); }
 function beepCountdown() { beep(550, 80, 0.15); }
 
 // ─── Navigation (History API) ────────────────────────────
-const SCREENS = { home: $home, settings: $settings, exercise: $exercise, stats: $stats };
+const SCREENS = { home: $home, settings: $settings, exercise: $exercise, stats: $stats, history: $history };
 
 function showScreen(screen) {
-  [$home, $settings, $exercise, $stats].forEach(s => s.classList.remove('active'));
+  [$home, $settings, $exercise, $stats, $history].forEach(s => s.classList.remove('active'));
   screen.classList.add('active');
 }
 
@@ -120,6 +121,10 @@ history.replaceState({ screen: 'home' }, '', '');
 // Back buttons (use history.back so browser back stack stays in sync)
 document.getElementById('backToHome').addEventListener('click', () => { history.back(); });
 document.getElementById('backToSettings').addEventListener('click', () => { history.back(); });
+document.getElementById('backFromHistory').addEventListener('click', () => { history.back(); });
+
+// History button
+document.getElementById('historyBtn').addEventListener('click', () => showHistoryScreen());
 
 document.querySelectorAll('.exercise-card').forEach(card => {
   card.addEventListener('click', (e) => {
@@ -182,6 +187,8 @@ function updateLangActiveStates() {
 // Apply language on load
 setLanguage(getLang());
 updateLangActiveStates();
+
+
 
 // ─── Info / Research modal ─────────────────────────────
 function openInfoModal(exerciseType) {
@@ -771,7 +778,13 @@ async function start478(cfg) {
 function finishExercise() {
   running = false;
   releaseWakeLock();
-  if (sessionData) sessionData.endTime = Date.now();
+  if (sessionData) {
+    sessionData.endTime = Date.now();
+    // Save to local storage
+    if (typeof saveSession === 'function') {
+      try { saveSession(sessionData); } catch (_) {}
+    }
+  }
   beep(523, 200); setTimeout(() => beep(659, 200), 220); setTimeout(() => beep(784, 300), 440);
   showStatsScreen();
 }

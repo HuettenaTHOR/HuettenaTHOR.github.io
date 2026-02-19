@@ -879,3 +879,75 @@ body {
 @keyframes tTailMove {
   50% { transform: rotate(-5deg); }
 }
+
+/* =========================================================
+   AUTH & HISTORY UI
+   ========================================================= */
+
+/* Home action buttons (login + history) */
+.home-actions {
+  display: flex; gap: .6rem; justify-content: center;
+  margin-bottom: 1.5rem; flex-wrap: wrap;
+}
+.home-action-btn {
+  background: rgba(6, 40, 61, .75); border: 1px solid var(--border);
+  color: var(--text); font-size: .88rem; padding: .45rem 1rem;
+  border-radius: 999px; cursor: pointer; display: flex; align-items: center; gap: .35rem;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  transition: border-color .2s, background .2s;
+}
+.home-action-btn:hover { border-color: var(--accent); background: rgba(10, 51, 81, .85); }
+.home-action-btn.logged-in { border-color: var(--accent); color: var(--accent); }
+
+/* Auth modal */
+.auth-modal { max-width: 400px; }
+.auth-title {
+  font-size: 1.4rem; font-weight: 700; margin-bottom: 1.25rem;
+  padding-right: 2rem;
+}
+.auth-body .field { margin-bottom: 1rem; }
+.auth-body .field label { display: block; font-size: .85rem; color: var(--text-dim); margin-bottom: .3rem; }
+.auth-body .field input {
+  width: 100%; padding: .6rem .75rem; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--surface2); color: var(--text);
+  font-size: 1rem; outline: none; transition: border-color .2s;
+}
+.auth-body .field input:focus { border-color: var(--accent); }
+.auth-error {
+  color: var(--danger); font-size: .85rem; min-height: 1.2em; margin-bottom: .5rem;
+}
+.auth-switch {
+  text-align: center; margin-top: 1rem; font-size: .88rem; color: var(--text-dim);
+}
+.auth-switch-btn {
+  background: none; border: none; color: var(--accent); cursor: pointer;
+  font-size: .88rem; text-decoration: underline; padding: 0;
+}
+.auth-switch-btn:hover { color: var(--text); }
+.auth-logout-btn {
+  width: 100%; padding: .65rem; border: 1px solid var(--border); border-radius: var(--radius);
+  background: transparent; color: var(--danger); font-size: .95rem;
+  cursor: pointer; transition: background .2s, border-color .2s;
+  margin-top: .6rem;
+}
+.auth-logout-btn:hover { background: rgba(248, 113, 113, .1); border-color: var(--danger); }
+
+/* History list */
+.history-list {
+  display: flex; flex-direction: column; gap: .6rem; margin-top: .75rem;
+}
+.history-item {
+  background: rgba(6, 40, 61, .75); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: .85rem 1rem;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+.history-item-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: .35rem;
+}
+.history-item-type { font-weight: 600; font-size: .95rem; }
+.history-item-date { font-size: .8rem; color: var(--text-dim); }
+.history-item-stats {
+  display: flex; gap: 1rem; font-size: .85rem; color: var(--text-dim);
+}
+

@@ -213,6 +213,32 @@ const TRANSLATIONS = {
     statsHeldFor: 'Held for: {0}',
     statsMin: 'min',
     statsSec: 's',
+
+    // ── Auth ──
+    authLogin: 'Login',
+    authLoginTitle: '🔒 Login',
+    authRegisterTitle: '📝 Register',
+    authUsername: 'Username',
+    authPassword: 'Password',
+    authLoginBtn: 'Login',
+    authRegisterBtn: 'Register',
+    authNoAccount: 'Don\'t have an account?',
+    authHasAccount: 'Already have an account?',
+    authLogout: 'Logout',
+
+    // ── History / Overview ──
+    historyBtn: 'Training Overview',
+    historyTitle: 'Training Overview',
+    historyOverview: 'Your Statistics',
+    historyTotalSessions: 'Training Sessions',
+    historyTotalTrainingTime: 'Total Training Time',
+    historyStreak: 'Day Streak',
+    historyTotalHolds: 'Total Holds',
+    historyByExercise: 'By Exercise',
+    historyRecentSessions: 'Recent Sessions',
+    historyNoSessions: 'No training sessions saved yet.',
+    historyShowing: 'Showing {0} of {1}',
+    loading: 'Loading...',
   },
 
   es: {
@@ -312,6 +338,32 @@ const TRANSLATIONS = {
     statsHeldFor: 'Retenido: {0}',
     statsMin: 'min',
     statsSec: 's',
+
+    // ── Auth ──
+    authLogin: 'Iniciar sesión',
+    authLoginTitle: '🔒 Iniciar sesión',
+    authRegisterTitle: '📝 Registrarse',
+    authUsername: 'Nombre de usuario',
+    authPassword: 'Contraseña',
+    authLoginBtn: 'Iniciar sesión',
+    authRegisterBtn: 'Registrarse',
+    authNoAccount: '¿No tienes cuenta?',
+    authHasAccount: '¿Ya tienes cuenta?',
+    authLogout: 'Cerrar sesión',
+
+    // ── History / Overview ──
+    historyBtn: 'Resumen de entreno',
+    historyTitle: 'Resumen de Entreno',
+    historyOverview: 'Tus estadísticas',
+    historyTotalSessions: 'Sesiones de entreno',
+    historyTotalTrainingTime: 'Tiempo total de entreno',
+    historyStreak: 'Días seguidos',
+    historyTotalHolds: 'Retenciones totales',
+    historyByExercise: 'Por ejercicio',
+    historyRecentSessions: 'Sesiones recientes',
+    historyNoSessions: 'Aún no hay sesiones guardadas.',
+    historyShowing: 'Mostrando {0} de {1}',
+    loading: 'Cargando...',
   },
 
   fr: {
@@ -411,6 +463,32 @@ const TRANSLATIONS = {
     statsHeldFor: 'Retenu : {0}',
     statsMin: 'min',
     statsSec: 's',
+
+    // ── Auth ──
+    authLogin: 'Connexion',
+    authLoginTitle: '🔒 Connexion',
+    authRegisterTitle: '📝 Inscription',
+    authUsername: 'Nom d\'utilisateur',
+    authPassword: 'Mot de passe',
+    authLoginBtn: 'Se connecter',
+    authRegisterBtn: 'S\'inscrire',
+    authNoAccount: 'Pas encore de compte ?',
+    authHasAccount: 'Déjà un compte ?',
+    authLogout: 'Déconnexion',
+
+    // ── History / Overview ──
+    historyBtn: 'Historique',
+    historyTitle: 'Historique d\'entraînement',
+    historyOverview: 'Vos statistiques',
+    historyTotalSessions: 'Séances d\'entraînement',
+    historyTotalTrainingTime: 'Temps d\'entraînement total',
+    historyStreak: 'Jours consécutifs',
+    historyTotalHolds: 'Rétentions totales',
+    historyByExercise: 'Par exercice',
+    historyRecentSessions: 'Séances récentes',
+    historyNoSessions: 'Aucune séance enregistrée.',
+    historyShowing: '{0} sur {1} affichées',
+    loading: 'Chargement...',
   },
 };
 
